@@ -17,6 +17,7 @@ data class DashboardUiState(
     val todayTasks: List<Task> = emptyList(),
     val upcomingMeetings: List<Meeting> = emptyList(),
     val todayEvents: List<Event> = emptyList(),
+    val todayClasses: List<Event> = emptyList(),    // ← নতুন
     val pendingTaskCount: Int = 0,
     val completedTaskCount: Int = 0,
     val totalTaskCount: Int = 0,
@@ -39,7 +40,6 @@ class DashboardViewModel @Inject constructor(
 
     private fun loadDashboard() {
         viewModelScope.launch {
-            // Combine all data flows into a single state
             combine(
                 taskRepository.getTodayTasks(),
                 taskRepository.getPendingTaskCount(),
@@ -48,13 +48,13 @@ class DashboardViewModel @Inject constructor(
                 meetingRepository.getUpcomingMeetings(5)
             ) { todayTasks, pending, completed, total, meetings ->
                 DashboardUiState(
-                    isLoading         = false,
-                    greeting          = buildGreeting(),
-                    todayTasks        = todayTasks,
-                    upcomingMeetings  = meetings,
-                    pendingTaskCount  = pending,
+                    isLoading          = false,
+                    greeting           = buildGreeting(),
+                    todayTasks         = todayTasks,
+                    upcomingMeetings   = meetings,
+                    pendingTaskCount   = pending,
                     completedTaskCount = completed,
-                    totalTaskCount    = total
+                    totalTaskCount     = total
                 )
             }.catch { e ->
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
@@ -63,12 +63,22 @@ class DashboardViewModel @Inject constructor(
             }
         }
 
-        // Collect today's events separately
+        // Today's events & classes
         viewModelScope.launch {
             val todayStart = LocalDate.now()
-                .atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+
             eventRepository.getEventsForDay(todayStart).collect { events ->
-                _uiState.update { it.copy(todayEvents = events) }
+                val classes     = events.filter { it.eventType == EventType.CLASS }
+                val otherEvents = events.filter { it.eventType != EventType.CLASS }
+                _uiState.update {
+                    it.copy(
+                        todayEvents   = otherEvents,
+                        todayClasses  = classes
+                    )
+                }
             }
         }
     }

@@ -9,10 +9,14 @@ data class EventEntity(
     val id: Long = 0,
     val title: String,
     val description: String = "",
-    val eventType: String,  // BIRTHDAY, ANNIVERSARY, SCHOOL_EVENT, FAMILY_EVENT, CLASS, OTHER
+    val eventType: String,
     val personName: String = "",
-    val eventDate: Long,    // epoch millis - stores date (day/month), year used for display
+    val eventDate: Long,
     val isYearlyRecurring: Boolean = true,
+    val isWeeklyRecurring: Boolean = false,   // ← নতুন
+    val weeklyDay: String? = null,            // ← নতুন (WeekDay enum name)
+    val startTime: String = "",               // ← নতুন (HH:mm)
+    val endTime: String = "",                 // ← নতুন (HH:mm)
     val reminderDaysBefore: Int = 1,
     val colorHex: String = "#FF6B6B",
     val createdAt: Long = System.currentTimeMillis(),

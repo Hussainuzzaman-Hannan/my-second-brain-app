@@ -176,6 +176,28 @@ fun DashboardScreen(
                     }
                 }
 
+                // ── Today's Classes ───────────────────────────────────────────────────────────
+                if (uiState.todayClasses.isNotEmpty()) {
+                    item {
+                        Spacer(Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment     = Alignment.CenterVertically
+                        ) {
+                            SectionHeader(title = "Today's Classes")
+                        }
+                    }
+                    items(uiState.todayClasses, key = { "class_${it.id}" }) { classEvent ->
+                        ClassCard(
+                            event    = classEvent,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+
                 item { Spacer(Modifier.height(88.dp)) } // FAB clearance
             }
         }
@@ -638,6 +660,84 @@ private fun EventCard(
                     text     = event.eventType.label,
                     style    = MaterialTheme.typography.labelSmall,
                     color    = eventColor,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
+        }
+    }
+}
+
+// ─── Class Card ───────────────────────────────────────────────────────────────
+
+@Composable
+private fun ClassCard(
+    event: Event,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier  = modifier.fillMaxWidth(),
+        shape     = RoundedCornerShape(12.dp),
+        colors    = CardDefaults.cardColors(
+            containerColor = Color(0xFF1565C0).copy(alpha = 0.08f)
+        ),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Icon bubble
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF1565C0).copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Outlined.MenuBook, null,
+                    tint     = Color(0xFF1565C0),
+                    modifier = Modifier.size(22.dp)
+                )
+            }
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text       = event.title,
+                    style      = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color      = Color(0xFF1565C0),
+                    maxLines   = 1,
+                    overflow   = TextOverflow.Ellipsis
+                )
+                if (event.personName.isNotBlank()) {
+                    Text(
+                        text  = event.personName,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF1565C0).copy(alpha = 0.7f)
+                    )
+                }
+                if (event.description.isNotBlank()) {
+                    Text(
+                        text  = event.description,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = Color(0xFF1565C0).copy(alpha = 0.12f)
+            ) {
+                Text(
+                    text     = "Class",
+                    style    = MaterialTheme.typography.labelSmall,
+                    color    = Color(0xFF1565C0),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )
             }

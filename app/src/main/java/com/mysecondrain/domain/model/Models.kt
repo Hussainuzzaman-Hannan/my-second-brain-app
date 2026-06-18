@@ -72,6 +72,17 @@ enum class EventType(val label: String) {
     OTHER("Other")
 }
 
+// সাপ্তাহিক দিন — java.time.DayOfWeek এর সাথে conflict এড়াতে WeekDay নাম দেওয়া হয়েছে
+enum class WeekDay(val label: String, val shortLabel: String) {
+    SUNDAY("Sunday", "Sun"),
+    MONDAY("Monday", "Mon"),
+    TUESDAY("Tuesday", "Tue"),
+    WEDNESDAY("Wednesday", "Wed"),
+    THURSDAY("Thursday", "Thu"),
+    FRIDAY("Friday", "Fri"),
+    SATURDAY("Saturday", "Sat")
+}
+
 data class Event(
     val id: Long = 0,
     val title: String,
@@ -80,6 +91,10 @@ data class Event(
     val personName: String = "",
     val eventDate: LocalDate,
     val isYearlyRecurring: Boolean = true,
+    val isWeeklyRecurring: Boolean = false,   // ← সাপ্তাহিক repeat
+    val weeklyDay: WeekDay? = null,           // ← কোন দিনে repeat হবে
+    val startTime: String = "",               // ← শুরুর সময় (HH:mm)
+    val endTime: String = "",                 // ← শেষের সময় (HH:mm)
     val reminderDaysBefore: Int = 1,
     val colorHex: String = "#FF6B6B"
 )

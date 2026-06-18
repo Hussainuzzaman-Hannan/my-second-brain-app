@@ -99,29 +99,39 @@ fun Meeting.toEntity() = MeetingEntity(
 
 // ─── Event ────────────────────────────────────────────────────────────────────
 
+// ─── Event ────────────────────────────────────────────────────────────────────
+
 fun EventEntity.toDomain() = Event(
-    id = id,
-    title = title,
-    description = description,
-    eventType = EventType.valueOf(eventType),
-    personName = personName,
-    eventDate = eventDate.toLocalDate(),
-    isYearlyRecurring = isYearlyRecurring,
+    id                 = id,
+    title              = title,
+    description        = description,
+    eventType          = EventType.valueOf(eventType),
+    personName         = personName,
+    eventDate          = eventDate.toLocalDate(),
+    isYearlyRecurring  = isYearlyRecurring,
+    isWeeklyRecurring  = isWeeklyRecurring,
+    weeklyDay          = weeklyDay?.let { WeekDay.valueOf(it) },
+    startTime          = startTime,
+    endTime            = endTime,
     reminderDaysBefore = reminderDaysBefore,
-    colorHex = colorHex
+    colorHex           = colorHex
 )
 
 fun Event.toEntity() = EventEntity(
-    id = id,
-    title = title,
-    description = description,
-    eventType = eventType.name,
-    personName = personName,
-    eventDate = eventDate.toEpochMilli(),
-    isYearlyRecurring = isYearlyRecurring,
+    id                 = id,
+    title              = title,
+    description        = description,
+    eventType          = eventType.name,
+    personName         = personName,
+    eventDate          = eventDate.toEpochMilli(),
+    isYearlyRecurring  = isYearlyRecurring,
+    isWeeklyRecurring  = isWeeklyRecurring,
+    weeklyDay          = weeklyDay?.name,
+    startTime          = startTime,
+    endTime            = endTime,
     reminderDaysBefore = reminderDaysBefore,
-    colorHex = colorHex,
-    updatedAt = System.currentTimeMillis()
+    colorHex           = colorHex,
+    updatedAt          = System.currentTimeMillis()
 )
 
 // ─── Note ─────────────────────────────────────────────────────────────────────
