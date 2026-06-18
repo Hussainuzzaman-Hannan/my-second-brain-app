@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">মাই সেকেন্ড ব্রেইন</string>
+
+    <!-- Notification channels -->
+    <string name="channel_tasks_name">কাজের রিমাইন্ডার</string>
+    <string name="channel_tasks_desc">আপনার কাজের রিমাইন্ডার</string>
+    <string name="channel_meetings_name">মিটিং রিমাইন্ডার</string>
+    <string name="channel_meetings_desc">আপনার মিটিং এর রিমাইন্ডার</string>
+    <string name="channel_events_name">ইভেন্ট রিমাইন্ডার</string>
+    <string name="channel_events_desc">জন্মদিন ও অনুষ্ঠানের রিমাইন্ডার</string>
+    <string name="channel_daily_name">দৈনিক সারসংক্ষেপ</string>
+    <string name="channel_daily_desc">আপনার দিনের সকালের সারসংক্ষেপ</string>
+
+    <!-- Common -->
+    <string name="save">সংরক্ষণ করুন</string>
+    <string name="cancel">বাতিল</string>
+    <string name="delete">মুছুন</string>
+    <string name="edit">সম্পাদনা</string>
+    <string name="back">পিছনে</string>
+    <string name="search">খুঁজুন</string>
+    <string name="add">যোগ করুন</string>
+    <string name="confirm">নিশ্চিত করুন</string>
+    <string name="retry">আবার চেষ্টা করুন</string>
+
+    <!-- Dashboard -->
+    <string name="greeting_morning">শুভ সকাল</string>
+    <string name="greeting_afternoon">শুভ অপরাহ্ন</string>
+    <string name="greeting_evening">শুভ সন্ধ্যা</string>
+    <string name="today_tasks">আজকের কাজ</string>
+    <string name="upcoming_meetings">আসন্ন মিটিং</string>
+    <string name="no_tasks_today">আজ কোনো কাজ নেই 🎉</string>
+    <string name="no_meetings">কোনো আসন্ন মিটিং নেই</string>
+
+    <!-- Tasks -->
+    <string name="new_task">নতুন কাজ</string>
+    <string name="edit_task">কাজ সম্পাদনা</string>
+    <string name="delete_task_confirm">এই কাজটি স্থায়ীভাবে মুছবেন?</string>
+    <string name="task_saved">কাজ সফলভাবে সংরক্ষিত হয়েছে</string>
+    <string name="task_deleted">কাজ মুছে গেছে</string>
+
+    <!-- Notes -->
+    <string name="new_note">নতুন নোট</string>
+    <string name="edit_note">নোট সম্পাদনা</string>
+    <string name="delete_note_confirm">এই নোটটি স্থায়ীভাবে মুছবেন?</string>
+
+    <!-- Meetings -->
+    <string name="new_meeting">নতুন মিটিং</string>
+    <string name="edit_meeting">মিটিং সম্পাদনা</string>
+
+    <!-- Events -->
+    <string name="new_event">নতুন ইভেন্ট</string>
+    <string name="edit_event">ইভেন্ট সম্পাদনা</string>
+
+    <!-- Voice -->
+    <string name="voice_prompt">আপনার কাজ বা রিমাইন্ডার বলুন...</string>
+    <string name="voice_listening">শুনছি...</string>
+    <string name="voice_error">বক্তব্য চেনা যায়নি। আবার চেষ্টা করুন।</string>
+
+    <!-- Widget -->
+    <string name="widget_description">আজকের মুলতুবি কাজ দেখায়</string>
+
+    <!-- Categories -->
+    <string name="teaching">শিক্ষকতা</string>
+    <string name="family">পরিবার</string>
+    <string name="personal">ব্যক্তিগত</string>
+    <string name="meeting">মিটিং</string>
+    <string name="colleague">সহকর্মী</string>
+    <string name="relative">আত্মীয়</string>
+    <string name="finance">অর্থ</string>
+    <string name="health">স্বাস্থ্য</string>
+    <string name="shopping">কেনাকাটা</string>
+    <string name="other">অন্যান্য</string>
+
+    <!-- Priority -->
+    <string name="priority_low">কম</string>
+    <string name="priority_medium">মাঝারি</string>
+    <string name="priority_high">বেশি</string>
+    <string name="priority_urgent">জরুরি</string>
+
+    <!-- Settings -->
+    <string name="settings">সেটিংস</string>
+    <string name="dark_mode">ডার্ক মোড</string>
+    <string name="notifications">বিজ্ঞপ্তি</string>
+    <string name="backup">ব্যাকআপ</string>
+    <string name="restore">পুনরুদ্ধার</string>
+    <string name="about">সম্পর্কে</string>
+    <string name="version">সংস্করণ</string>
+
+    <!-- Stats -->
+    <string name="total_tasks">মোট কাজ</string>
+    <string name="completed_tasks">সম্পন্ন কাজ</string>
+    <string name="pending_tasks">মুলতুবি কাজ</string>
+    <string name="completion_rate">সম্পন্নের হার</string>
+</resources>

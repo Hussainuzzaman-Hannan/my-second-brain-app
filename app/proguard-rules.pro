@@ -1,0 +1,9 @@
+-keep class com.mysecondrain.data.local.entity.** { *; }
+-keep class dagger.hilt.** { *; }
+-keep class com.mysecondrain.worker.** { *; }
+-keep class * extends androidx.work.Worker { *; }
+-keep class * extends androidx.work.CoroutineWorker { *; }
+-keep class com.mysecondrain.notification.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.google.gson.** { *; }

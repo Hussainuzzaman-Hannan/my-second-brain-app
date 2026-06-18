@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">My Second Brain</string>
+
+    <!-- Notification channels -->
+    <string name="channel_tasks_name">Task Reminders</string>
+    <string name="channel_tasks_desc">Reminders for your tasks</string>
+    <string name="channel_meetings_name">Meeting Reminders</string>
+    <string name="channel_meetings_desc">Reminders for your meetings</string>
+    <string name="channel_events_name">Event Reminders</string>
+    <string name="channel_events_desc">Reminders for birthdays and events</string>
+    <string name="channel_daily_name">Daily Summary</string>
+    <string name="channel_daily_desc">Morning summary of your day</string>
+
+    <!-- Common -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="search">Search</string>
+    <string name="add">Add</string>
+    <string name="confirm">Confirm</string>
+    <string name="retry">Try Again</string>
+
+    <!-- Dashboard -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="today_tasks">Today\'s Tasks</string>
+    <string name="upcoming_meetings">Upcoming Meetings</string>
+    <string name="no_tasks_today">No tasks for today 🎉</string>
+    <string name="no_meetings">No upcoming meetings</string>
+
+    <!-- Tasks -->
+    <string name="new_task">New Task</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="delete_task_confirm">Delete this task permanently?</string>
+    <string name="task_saved">Task saved successfully</string>
+    <string name="task_deleted">Task deleted</string>
+
+    <!-- Notes -->
+    <string name="new_note">New Note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="delete_note_confirm">Delete this note permanently?</string>
+
+    <!-- Meetings -->
+    <string name="new_meeting">New Meeting</string>
+    <string name="edit_meeting">Edit Meeting</string>
+
+    <!-- Events -->
+    <string name="new_event">New Event</string>
+    <string name="edit_event">Edit Event</string>
+
+    <!-- Voice -->
+    <string name="voice_prompt">Speak your task or reminder...</string>
+    <string name="voice_listening">Listening...</string>
+    <string name="voice_error">Could not recognize speech. Please try again.</string>
+
+    <string name="widget_description">Shows today\'s pending tasks</string>
+</resources>
