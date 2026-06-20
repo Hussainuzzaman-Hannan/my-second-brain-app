@@ -38,6 +38,15 @@ sealed class Screen(val route: String) {
     object Voice      : Screen("voice")
     object Categories : Screen("categories")
     object Backup     : Screen("backup")
+
+    // ── Debt / Loan Tracker ──────────────────────────────────────────────────
+    object Debts      : Screen("debts")
+    object AddEditDebt : Screen("add_edit_debt?debtId={debtId}") {
+        fun createRoute(debtId: Long = -1) = "add_edit_debt?debtId=$debtId"
+    }
+    object DebtDetail : Screen("debt_detail/{debtId}") {
+        fun createRoute(debtId: Long) = "debt_detail/$debtId"
+    }
 }
 
 data class BottomNavItem(

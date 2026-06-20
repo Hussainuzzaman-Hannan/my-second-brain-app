@@ -2,9 +2,11 @@ package com.mysecondrain.data.repository
 
 import com.mysecondrain.data.local.dao.*
 import com.mysecondrain.data.local.database.*
+import com.mysecondrain.data.local.entity.DebtPaymentEntity
 import com.mysecondrain.domain.model.*
 import com.mysecondrain.domain.repository.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -217,4 +219,62 @@ class NoteRepositoryImpl @Inject constructor(
 
     override suspend fun togglePin(id: Long, pinned: Boolean) =
         noteDao.togglePin(id, pinned)
+}
+
+// ─── Debt Repository ──────────────────────────────────────────────────────────
+
+@Singleton
+class DebtRepositoryImpl @Inject constructor(
+    private val debtDao: DebtDao
+) : DebtRepository {
+
+    override fun getAllDebts(): Flow<List<Debt>> =
+        debtDao.getAllDebts().map { list -> list.map { it.toDomain() } }
+
+    override fun getDebtsIOwe(): Flow<List<Debt>> =
+        debtDao.getDebtsIOwe().map { list -> list.map { it.toDomain() } }
+
+    override fun getDebtsOwedToMe(): Flow<List<Debt>> =
+        debtDao.getDebtsOwedToMe().map { list -> list.map { it.toDomain() } }
+
+    override fun getDebtById(id: Long): Flow<Debt?> =
+        debtDao.getDebtById(id).map { it?.toDomain() }
+
+    override fun searchDebts(query: String): Flow<List<Debt>> =
+        debtDao.searchDebts(query).map { list -> list.map { it.toDomain() } }
+
+    override fun getTotalIOwe(): Flow<Double> = debtDao.getTotalIOwe()
+
+    override fun getTotalOwedToMe(): Flow<Double> = debtDao.getTotalOwedToMe()
+
+    override fun getPaymentsForDebt(debtId: Long): Flow<List<DebtPayment>> =
+        debtDao.getPaymentsForDebt(debtId).map { list -> list.map { it.toDomain() } }
+
+    override suspend fun addDebt(debt: Debt): Long =
+        debtDao.insertDebt(debt.toEntity())
+
+    override suspend fun updateDebt(debt: Debt) =
+        debtDao.updateDebt(debt.toEntity())
+
+    override suspend fun deleteDebt(id: Long) =
+        debtDao.deleteDebt(id)
+
+    override suspend fun addPayment(debtId: Long, amount: Double, note: String) {
+        debtDao.insertPayment(
+            DebtPaymentEntity(
+                debtId      = debtId,
+                amount      = amount,
+                note        = note,
+                paymentDate = LocalDate.now().toEpochMilli()
+            )
+        )
+        val debt = debtDao.getDebtById(debtId).firstOrNull() ?: return
+        val newPaidAmount = debt.paidAmount + amount
+        val newStatus = when {
+            newPaidAmount >= debt.totalAmount -> "PAID"
+            newPaidAmount > 0                  -> "PARTIALLY_PAID"
+            else                                -> "PENDING"
+        }
+        debtDao.addPaymentToDebt(debtId, amount, newStatus)
+    }
 }

@@ -26,4 +26,7 @@ abstract class RepositoryModule {
 
     @Binds @Singleton
     abstract fun bindNoteRepository(impl: NoteRepositoryImpl): NoteRepository
+
+    @Binds @Singleton
+    abstract fun bindDebtRepository(impl: DebtRepositoryImpl): DebtRepository
 }

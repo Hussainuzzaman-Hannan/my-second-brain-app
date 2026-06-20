@@ -130,3 +130,41 @@ data class DashboardSummary(
     val completedTaskCount: Int = 0,
     val todayEvents: List<Event> = emptyList()
 )
+
+// ─── Debt / Loan Tracker ──────────────────────────────────────────────────────
+
+enum class DebtType(val label: String) {
+    I_OWE("আমি দেই"),       // আমি তার কাছে টাকা পাওনা (আমার দেওয়ার কথা)
+    OWES_ME("আমি পাই")      // সে আমার কাছে পাওনা (আমার পাওয়ার কথা)
+}
+
+enum class DebtStatus(val label: String) {
+    PENDING("বাকি আছে"),
+    PARTIALLY_PAID("আংশিক পরিশোধ"),
+    PAID("পরিশোধিত")
+}
+
+data class DebtPayment(
+    val id: Long = 0,
+    val debtId: Long = 0,
+    val amount: Double,
+    val note: String = "",
+    val paymentDate: LocalDate = LocalDate.now()
+)
+
+data class Debt(
+    val id: Long = 0,
+    val personName: String,
+    val debtType: DebtType,
+    val totalAmount: Double,
+    val paidAmount: Double = 0.0,
+    val reason: String = "",
+    val debtDate: LocalDate = LocalDate.now(),
+    val dueDate: LocalDate? = null,
+    val status: DebtStatus = DebtStatus.PENDING,
+    val notes: String = "",
+    val createdAt: LocalDateTime = LocalDateTime.now()
+) {
+    val remainingAmount: Double get() = totalAmount - paidAmount
+    val isFullyPaid: Boolean get() = remainingAmount <= 0.0
+}

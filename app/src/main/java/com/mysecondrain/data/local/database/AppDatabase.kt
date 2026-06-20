@@ -14,10 +14,12 @@ import com.mysecondrain.data.local.entity.*
         MeetingEntity::class,
         EventEntity::class,
         NoteEntity::class,
-        ReminderEntity::class
+        ReminderEntity::class,
+        DebtEntity::class,
+        DebtPaymentEntity::class
     ],
-    version = 2,          // ← 1 থেকে 2 করা হয়েছে
-    exportSchema = false   // ← true থেকে false করা হয়েছে
+    version = 3,           // ← 2 থেকে 3 করা হয়েছে
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -27,12 +29,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
     abstract fun noteDao(): NoteDao
     abstract fun reminderDao(): ReminderDao
+    abstract fun debtDao(): DebtDao
 
     companion object {
         const val DATABASE_NAME = "my_second_brain.db"
 
-        // Version 1 → 2 Migration
-        // EventEntity তে নতুন 4টা column যোগ করা হয়েছে
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
@@ -47,6 +48,38 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL(
                     "ALTER TABLE events ADD COLUMN endTime TEXT NOT NULL DEFAULT ''"
                 )
+            }
+        }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS debts (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        personName TEXT NOT NULL,
+                        debtType TEXT NOT NULL,
+                        totalAmount REAL NOT NULL,
+                        paidAmount REAL NOT NULL DEFAULT 0.0,
+                        reason TEXT NOT NULL DEFAULT '',
+                        debtDate INTEGER NOT NULL,
+                        dueDate INTEGER,
+                        status TEXT NOT NULL DEFAULT 'PENDING',
+                        notes TEXT NOT NULL DEFAULT '',
+                        createdAt INTEGER NOT NULL,
+                        updatedAt INTEGER NOT NULL,
+                        isDeleted INTEGER NOT NULL DEFAULT 0
+                    )
+                """)
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS debt_payments (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        debtId INTEGER NOT NULL,
+                        amount REAL NOT NULL,
+                        note TEXT NOT NULL DEFAULT '',
+                        paymentDate INTEGER NOT NULL,
+                        createdAt INTEGER NOT NULL
+                    )
+                """)
             }
         }
     }

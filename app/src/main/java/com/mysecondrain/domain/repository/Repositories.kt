@@ -61,3 +61,18 @@ interface NoteRepository {
     suspend fun deleteNote(id: Long)
     suspend fun togglePin(id: Long, pinned: Boolean)
 }
+
+interface DebtRepository {
+    fun getAllDebts(): Flow<List<Debt>>
+    fun getDebtsIOwe(): Flow<List<Debt>>
+    fun getDebtsOwedToMe(): Flow<List<Debt>>
+    fun getDebtById(id: Long): Flow<Debt?>
+    fun searchDebts(query: String): Flow<List<Debt>>
+    fun getTotalIOwe(): Flow<Double>
+    fun getTotalOwedToMe(): Flow<Double>
+    fun getPaymentsForDebt(debtId: Long): Flow<List<DebtPayment>>
+    suspend fun addDebt(debt: Debt): Long
+    suspend fun updateDebt(debt: Debt)
+    suspend fun deleteDebt(id: Long)
+    suspend fun addPayment(debtId: Long, amount: Double, note: String)
+}

@@ -158,3 +158,41 @@ fun Note.toEntity() = NoteEntity(
     colorHex = colorHex,
     updatedAt = System.currentTimeMillis()
 )
+
+// ─── Debt ─────────────────────────────────────────────────────────────────────
+
+fun DebtEntity.toDomain() = Debt(
+    id             = id,
+    personName     = personName,
+    debtType       = DebtType.valueOf(debtType),
+    totalAmount    = totalAmount,
+    paidAmount     = paidAmount,
+    reason         = reason,
+    debtDate       = debtDate.toLocalDate(),
+    dueDate        = dueDate?.toLocalDate(),
+    status         = DebtStatus.valueOf(status),
+    notes          = notes,
+    createdAt      = createdAt.toLocalDateTime()
+)
+
+fun Debt.toEntity() = DebtEntity(
+    id             = id,
+    personName     = personName,
+    debtType       = debtType.name,
+    totalAmount    = totalAmount,
+    paidAmount     = paidAmount,
+    reason         = reason,
+    debtDate       = debtDate.toEpochMilli(),
+    dueDate        = dueDate?.toEpochMilli(),
+    status         = status.name,
+    notes          = notes,
+    updatedAt      = System.currentTimeMillis()
+)
+
+fun DebtPaymentEntity.toDomain() = DebtPayment(
+    id          = id,
+    debtId      = debtId,
+    amount      = amount,
+    note        = note,
+    paymentDate = paymentDate.toLocalDate()
+)
