@@ -17,7 +17,7 @@ data class DashboardUiState(
     val todayTasks: List<Task> = emptyList(),
     val upcomingMeetings: List<Meeting> = emptyList(),
     val todayEvents: List<Event> = emptyList(),
-    val todayClasses: List<Event> = emptyList(),    // ← নতুন
+    val todayClasses: List<Event> = emptyList(),
     val pendingTaskCount: Int = 0,
     val completedTaskCount: Int = 0,
     val totalTaskCount: Int = 0,
@@ -59,24 +59,54 @@ class DashboardViewModel @Inject constructor(
             }.catch { e ->
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }.collect { state ->
-                _uiState.value = state
+                // আগের todayEvents/todayClasses preserve করো, বাকি সব আপডেট করো
+                _uiState.update { current ->
+                    state.copy(
+                        todayEvents  = current.todayEvents,
+                        todayClasses = current.todayClasses
+                    )
+                }
             }
         }
 
-        // Today's events & classes
+        // Today's events & weekly recurring classes
         viewModelScope.launch {
-            val todayStart = LocalDate.now()
+            val today = LocalDate.now()
+            val todayStart = today
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
                 .toEpochMilli()
 
-            eventRepository.getEventsForDay(todayStart).collect { events ->
-                val classes     = events.filter { it.eventType == EventType.CLASS }
-                val otherEvents = events.filter { it.eventType != EventType.CLASS }
+            val todayWeekDay = toWeekDay(today)
+
+            combine(
+                eventRepository.getEventsForDay(todayStart),
+                eventRepository.getAllEvents()
+            ) { dayEvents, allEvents ->
+
+                // আজকের তারিখে সরাসরি পড়া class (non-recurring বা প্রথমবার)
+                val directClasses = dayEvents.filter { it.eventType == EventType.CLASS }
+
+                // Weekly recurring class — আজকের weekday এর সাথে মিললে দেখাবে
+                val weeklyClasses = allEvents.filter { event ->
+                    event.eventType == EventType.CLASS &&
+                            event.isWeeklyRecurring &&
+                            event.weeklyDay == todayWeekDay &&
+                            event.eventDate <= today   // শুরুর তারিখ আজকের আগে বা সমান হতে হবে
+                }
+
+                val allTodayClasses = (directClasses + weeklyClasses)
+                    .distinctBy { it.id }
+                    .sortedBy { it.startTime }
+
+                val otherEvents = dayEvents.filter { it.eventType != EventType.CLASS }
+
+                Pair(otherEvents, allTodayClasses)
+            }.collect { (otherEvents, classes) ->
                 _uiState.update {
                     it.copy(
-                        todayEvents   = otherEvents,
-                        todayClasses  = classes
+                        todayEvents  = otherEvents,
+                        todayClasses = classes
                     )
                 }
             }
@@ -100,5 +130,16 @@ class DashboardViewModel @Inject constructor(
             hour < 17 -> "শুভ অপরাহ্ন"
             else      -> "শুভ সন্ধ্যা"
         }
+    }
+
+    // java.time.DayOfWeek কে আমাদের WeekDay enum এ রূপান্তর করে
+    private fun toWeekDay(date: LocalDate): WeekDay = when (date.dayOfWeek) {
+        java.time.DayOfWeek.SUNDAY    -> WeekDay.SUNDAY
+        java.time.DayOfWeek.MONDAY    -> WeekDay.MONDAY
+        java.time.DayOfWeek.TUESDAY   -> WeekDay.TUESDAY
+        java.time.DayOfWeek.WEDNESDAY -> WeekDay.WEDNESDAY
+        java.time.DayOfWeek.THURSDAY  -> WeekDay.THURSDAY
+        java.time.DayOfWeek.FRIDAY    -> WeekDay.FRIDAY
+        java.time.DayOfWeek.SATURDAY  -> WeekDay.SATURDAY
     }
 }

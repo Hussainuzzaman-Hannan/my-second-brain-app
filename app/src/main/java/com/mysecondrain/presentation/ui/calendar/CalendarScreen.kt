@@ -98,18 +98,54 @@ class CalendarViewModel @Inject constructor(
                     meeting.dateTime.dayOfMonth == date.dayOfMonth
         }
 
+    // Normal (non-class) events — birthday, anniversary ইত্যাদি
     fun eventsForDate(date: LocalDate): List<Event> =
         _uiState.value.events.filter { event ->
-            event.eventDate.dayOfMonth == date.dayOfMonth &&
+            event.eventType != EventType.CLASS &&
+                    event.eventDate.dayOfMonth == date.dayOfMonth &&
                     event.eventDate.month == date.month
         }
+
+    // Class — direct date match + weekly recurring মিলিয়ে দেখায়
+    fun classesForDate(date: LocalDate): List<Event> {
+        val weekDay = toWeekDay(date)
+
+        val directClasses = _uiState.value.events.filter { event ->
+            event.eventType == EventType.CLASS &&
+                    !event.isWeeklyRecurring &&
+                    event.eventDate.dayOfMonth == date.dayOfMonth &&
+                    event.eventDate.month == date.month &&
+                    event.eventDate.year == date.year
+        }
+
+        val weeklyClasses = _uiState.value.events.filter { event ->
+            event.eventType == EventType.CLASS &&
+                    event.isWeeklyRecurring &&
+                    event.weeklyDay == weekDay &&
+                    event.eventDate <= date   // শুরুর তারিখের পর থেকেই দেখাবে
+        }
+
+        return (directClasses + weeklyClasses)
+            .distinctBy { it.id }
+            .sortedBy { it.startTime }
+    }
 
     fun hasActivity(date: LocalDate): Boolean =
         tasksForDate(date).isNotEmpty() ||
                 meetingsForDate(date).isNotEmpty() ||
-                eventsForDate(date).isNotEmpty()
+                eventsForDate(date).isNotEmpty() ||
+                classesForDate(date).isNotEmpty()
 
-} // ← ViewModel এর closing brace
+    private fun toWeekDay(date: LocalDate): WeekDay = when (date.dayOfWeek) {
+        java.time.DayOfWeek.SUNDAY    -> WeekDay.SUNDAY
+        java.time.DayOfWeek.MONDAY    -> WeekDay.MONDAY
+        java.time.DayOfWeek.TUESDAY   -> WeekDay.TUESDAY
+        java.time.DayOfWeek.WEDNESDAY -> WeekDay.WEDNESDAY
+        java.time.DayOfWeek.THURSDAY  -> WeekDay.THURSDAY
+        java.time.DayOfWeek.FRIDAY    -> WeekDay.FRIDAY
+        java.time.DayOfWeek.SATURDAY  -> WeekDay.SATURDAY
+    }
+}
 
 // ─── Calendar Screen ──────────────────────────────────────────────────────────
 
@@ -179,6 +215,21 @@ fun CalendarScreen(
                 )
             }
 
+            // Classes (sorted by time)
+            val dayClasses = viewModel.classesForDate(state.selectedDate)
+            if (dayClasses.isNotEmpty()) {
+                item {
+                    DaySectionHeader(
+                        title = "Classes",
+                        icon  = Icons.Outlined.MenuBook,
+                        color = Color(0xFF1565C0)
+                    )
+                }
+                items(dayClasses) { classEvent ->
+                    DayClassItem(event = classEvent)
+                }
+            }
+
             // Tasks
             val dayTasks = viewModel.tasksForDate(state.selectedDate)
             if (dayTasks.isNotEmpty()) {
@@ -225,7 +276,8 @@ fun CalendarScreen(
             }
 
             // Empty state
-            if (dayTasks.isEmpty() && dayMeetings.isEmpty() && dayEvents.isEmpty()) {
+            if (dayTasks.isEmpty() && dayMeetings.isEmpty() &&
+                dayEvents.isEmpty() && dayClasses.isEmpty()) {
                 item {
                     Box(
                         modifier = Modifier
@@ -414,6 +466,74 @@ private fun DaySectionHeader(
 }
 
 // ─── Day Item Cards ───────────────────────────────────────────────────────────
+
+@Composable
+private fun DayClassItem(event: Event) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 3.dp),
+        shape  = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1565C0).copy(alpha = 0.08f)
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Outlined.MenuBook, null,
+                tint     = Color(0xFF1565C0),
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    event.title,
+                    style      = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color      = Color(0xFF1565C0),
+                    maxLines   = 1,
+                    overflow   = TextOverflow.Ellipsis
+                )
+                if (event.personName.isNotBlank()) {
+                    Text(
+                        event.personName,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFF1565C0).copy(alpha = 0.7f)
+                    )
+                }
+                if (event.description.isNotBlank()) {
+                    Text(
+                        event.description,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+            if (event.startTime.isNotBlank()) {
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        event.startTime,
+                        style      = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color      = Color(0xFF1565C0)
+                    )
+                    if (event.endTime.isNotBlank()) {
+                        Text(
+                            "- ${event.endTime}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF1565C0).copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun DayTaskItem(task: Task, onClick: () -> Unit) {
