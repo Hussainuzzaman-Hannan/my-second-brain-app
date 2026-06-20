@@ -13,6 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mysecondrain.presentation.ui.calendar.CalendarScreen
 import com.mysecondrain.presentation.ui.dashboard.DashboardScreen
+import com.mysecondrain.presentation.ui.debts.AddEditDebtScreen
+import com.mysecondrain.presentation.ui.debts.DebtDetailScreen
+import com.mysecondrain.presentation.ui.debts.DebtsScreen
 import com.mysecondrain.presentation.ui.events.AddEditEventScreen
 import com.mysecondrain.presentation.ui.events.EventsScreen
 import com.mysecondrain.presentation.ui.meetings.AddEditMeetingScreen
@@ -149,7 +152,8 @@ fun AppNavGraph(
                 onVoice      = { navController.navigate(Screen.Voice.route) },
                 onCategories = { navController.navigate(Screen.Categories.route) },
                 onBackup     = { navController.navigate(Screen.Backup.route) },
-                onSettings   = { navController.navigate(Screen.Settings.route) }
+                onSettings   = { navController.navigate(Screen.Settings.route) },
+                onDebts      = { navController.navigate(Screen.Debts.route) }
             )
         }
 
@@ -244,6 +248,45 @@ fun AppNavGraph(
         composable(Screen.Backup.route) {
             BackupScreen(
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        // ── Debts / Receivables ───────────────────────────────────────────────
+        composable(Screen.Debts.route) {
+            DebtsScreen(
+                onAddDebt   = { navController.navigate(Screen.AddEditDebt.createRoute()) },
+                onDebtClick = { id -> navController.navigate(Screen.DebtDetail.createRoute(id)) },
+                onBack      = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route     = Screen.AddEditDebt.route,
+            arguments = listOf(
+                navArgument("debtId") {
+                    defaultValue = -1L
+                    type = NavType.LongType
+                }
+            )
+        ) { backStack ->
+            val debtId = backStack.arguments?.getLong("debtId") ?: -1L
+            AddEditDebtScreen(
+                debtId  = debtId,
+                onSaved = { navController.popBackStack() },
+                onBack  = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route     = Screen.DebtDetail.route,
+            arguments = listOf(
+                navArgument("debtId") { type = NavType.LongType }
+            )
+        ) { backStack ->
+            val debtId = backStack.arguments?.getLong("debtId") ?: return@composable
+            DebtDetailScreen(
+                debtId    = debtId,
+                onEdit    = { id -> navController.navigate(Screen.AddEditDebt.createRoute(id)) },
+                onDeleted = { navController.popBackStack() },
+                onBack    = { navController.popBackStack() }
             )
         }
     }

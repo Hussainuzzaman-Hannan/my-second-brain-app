@@ -37,7 +37,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             AppDatabase.DATABASE_NAME
         )
-            .addMigrations(AppDatabase.MIGRATION_1_2)   // ← এটা যোগ করা হয়েছে
+            .addMigrations(AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3)   // ← এটা যোগ করা হয়েছে
             .addCallback(object : androidx.room.RoomDatabase.Callback() {
                 override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
                     super.onCreate(db)
@@ -69,4 +69,5 @@ object DatabaseModule {
     @Provides fun provideEventDao(db: AppDatabase): EventDao       = db.eventDao()
     @Provides fun provideNoteDao(db: AppDatabase): NoteDao         = db.noteDao()
     @Provides fun provideReminderDao(db: AppDatabase): ReminderDao = db.reminderDao()
+    @Provides fun provideDebtDao(db: AppDatabase): DebtDao         = db.debtDao()
 }

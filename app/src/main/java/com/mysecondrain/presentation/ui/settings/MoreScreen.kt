@@ -36,11 +36,13 @@ fun MoreScreen(
     onVoice: () -> Unit,
     onCategories: () -> Unit,
     onBackup: () -> Unit,
-    onSettings: () -> Unit
+    onSettings: () -> Unit,
+    onDebts: () -> Unit
 ) {
     val menuItems = listOf(
         MoreMenuItem("Meetings",    Icons.Outlined.Groups,    Color(0xFFE65100), onMeetings),
         MoreMenuItem("Events",      Icons.Outlined.Cake,      Color(0xFFE91E63), onEvents),
+        MoreMenuItem("হিসাব",       Icons.Outlined.AccountBalanceWallet, Color(0xFF2E7D32), onDebts),
         MoreMenuItem("Statistics",  Icons.Outlined.BarChart,  Color(0xFF1565C0), onStatistics),
         MoreMenuItem("Voice Entry", Icons.Outlined.Mic,       Color(0xFF2E7D32), onVoice),
         MoreMenuItem("Categories",  Icons.Outlined.Category,  Color(0xFF00838F), onCategories),

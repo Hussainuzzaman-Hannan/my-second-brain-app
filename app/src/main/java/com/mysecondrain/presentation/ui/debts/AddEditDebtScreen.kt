@@ -526,7 +526,7 @@ fun AddEditDebtScreen(
 // ─── Payment History Item ─────────────────────────────────────────────────────
 
 @Composable
-private fun PaymentHistoryItem(payment: DebtPayment, accentColor: Color) {
+internal fun PaymentHistoryItem(payment: DebtPayment, accentColor: Color) {
     val fmt = DateTimeFormatter.ofPattern("d MMM yyyy")
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -561,7 +561,7 @@ private fun PaymentHistoryItem(payment: DebtPayment, accentColor: Color) {
 // ─── Add Payment Dialog ───────────────────────────────────────────────────────
 
 @Composable
-private fun AddPaymentDialog(
+internal fun AddPaymentDialog(
     remainingAmount: Double,
     onDismiss: () -> Unit,
     onConfirm: (Double, String) -> Unit

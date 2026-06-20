@@ -397,7 +397,7 @@ private fun DebtListItem(
 }
 
 @Composable
-private fun StatusBadge(status: DebtStatus) {
+internal fun StatusBadge(status: DebtStatus) {
     val (color, _) = when (status) {
         DebtStatus.PENDING        -> Color(0xFFE65100) to "বাকি"
         DebtStatus.PARTIALLY_PAID -> Color(0xFF1565C0) to "আংশিক"
