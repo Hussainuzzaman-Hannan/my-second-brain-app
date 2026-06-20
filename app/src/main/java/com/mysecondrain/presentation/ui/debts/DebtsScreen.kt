@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.mysecondrain.R
 import com.mysecondrain.domain.model.Debt
 import com.mysecondrain.domain.model.DebtStatus
 import com.mysecondrain.domain.model.DebtType
@@ -33,8 +35,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
-private val owedToMeColor = Color(0xFF2E7D32)   // সবুজ — আমি পাই
-private val iOweColor     = Color(0xFFC62828)   // লাল — আমি দেই
+private val owedToMeColor = Color(0xFF2E7D32)
+private val iOweColor     = Color(0xFFC62828)
 
 // ─── ViewModel ────────────────────────────────────────────────────────────────
 
@@ -89,12 +91,12 @@ fun DebtsScreen(
     viewModel: DebtsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedTab by remember { mutableStateOf(0) } // 0 = আমি পাই, 1 = আমি দেই
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("হিসাব / পাওনা-দেনা", fontWeight = FontWeight.SemiBold) },
+                title = { Text(stringResource(R.string.debt_title), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Outlined.ArrowBack, "Back")
@@ -109,7 +111,7 @@ fun DebtsScreen(
             ExtendedFloatingActionButton(
                 onClick        = onAddDebt,
                 icon           = { Icon(Icons.Filled.Add, null) },
-                text           = { Text("নতুন হিসাব") },
+                text           = { Text(stringResource(R.string.debt_new)) },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor   = MaterialTheme.colorScheme.onPrimary
             )
@@ -120,29 +122,31 @@ fun DebtsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Summary cards
             SummaryRow(
                 totalOwedToMe = state.totalOwedToMe,
                 totalIOwe     = state.totalIOwe,
                 modifier      = Modifier.padding(16.dp)
             )
 
-            // Tabs
             TabRow(selectedTabIndex = selectedTab) {
                 Tab(
                     selected = selectedTab == 0,
                     onClick  = { selectedTab = 0 },
                     text     = {
-                        Text("আমি পাই (${state.debtsOwedToMe.size})",
-                            fontWeight = if (selectedTab == 0) FontWeight.SemiBold else FontWeight.Normal)
+                        Text(
+                            "${stringResource(R.string.debt_owed_to_me)} (${state.debtsOwedToMe.size})",
+                            fontWeight = if (selectedTab == 0) FontWeight.SemiBold else FontWeight.Normal
+                        )
                     }
                 )
                 Tab(
                     selected = selectedTab == 1,
                     onClick  = { selectedTab = 1 },
                     text     = {
-                        Text("আমি দেই (${state.debtsIOwe.size})",
-                            fontWeight = if (selectedTab == 1) FontWeight.SemiBold else FontWeight.Normal)
+                        Text(
+                            "${stringResource(R.string.debt_i_owe)} (${state.debtsIOwe.size})",
+                            fontWeight = if (selectedTab == 1) FontWeight.SemiBold else FontWeight.Normal
+                        )
                     }
                 )
             }
@@ -161,14 +165,18 @@ fun DebtsScreen(
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
-                            if (selectedTab == 0) "কেউ আপনার কাছে কোনো টাকা পাওনা নেই"
-                            else "আপনি কারো কাছে কোনো টাকা পাওনা নেই",
+                            stringResource(
+                                if (selectedTab == 0) R.string.debt_no_owed_to_me
+                                else R.string.debt_no_i_owe
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Text("নতুন হিসাব যোগ করতে + চাপুন",
+                        Text(
+                            stringResource(R.string.debt_add_hint),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.outline)
+                            color = MaterialTheme.colorScheme.outline
+                        )
                     }
                 }
             } else {
@@ -205,14 +213,14 @@ private fun SummaryRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         SummaryCard(
-            label    = "আমি পাবো",
+            label    = stringResource(R.string.debt_total_to_receive),
             amount   = totalOwedToMe,
             color    = owedToMeColor,
             icon     = Icons.Outlined.TrendingUp,
             modifier = Modifier.weight(1f)
         )
         SummaryCard(
-            label    = "আমি দিবো",
+            label    = stringResource(R.string.debt_total_to_pay),
             amount   = totalIOwe,
             color    = iOweColor,
             icon     = Icons.Outlined.TrendingDown,
@@ -240,13 +248,16 @@ private fun SummaryRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "নিট হিসাব",
+                stringResource(R.string.debt_net_balance),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                formatTaka(kotlin.math.abs(netBalance)) +
-                        if (netBalance >= 0) " পাবেন" else " দিতে হবে",
+                formatTaka(kotlin.math.abs(netBalance)) + " " +
+                        stringResource(
+                            if (netBalance >= 0) R.string.debt_will_receive
+                            else R.string.debt_will_pay
+                        ),
                 style      = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color      = if (netBalance >= 0) owedToMeColor else iOweColor
@@ -300,15 +311,17 @@ private fun DebtListItem(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("মুছে ফেলবেন?") },
-            text  = { Text("\"${debt.personName}\" এর এই হিসাবটি মুছে যাবে।") },
+            title = { Text(stringResource(R.string.debt_delete_confirm_title)) },
+            text  = { Text(stringResource(R.string.debt_delete_confirm_text, debt.personName)) },
             confirmButton = {
                 TextButton(onClick = { showDeleteDialog = false; onDelete() }) {
-                    Text("মুছুন", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.debt_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("বাতিল") }
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.debt_cancel))
+                }
             }
         )
     }
@@ -378,7 +391,7 @@ private fun DebtListItem(
                 )
                 if (debt.paidAmount > 0) {
                     Text(
-                        "মোট ${formatTaka(debt.totalAmount)}",
+                        "${stringResource(R.string.debt_total)} ${formatTaka(debt.totalAmount)}",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.outline
                     )
@@ -394,30 +407,4 @@ private fun DebtListItem(
             }
         }
     }
-}
-
-@Composable
-internal fun StatusBadge(status: DebtStatus) {
-    val (color, _) = when (status) {
-        DebtStatus.PENDING        -> Color(0xFFE65100) to "বাকি"
-        DebtStatus.PARTIALLY_PAID -> Color(0xFF1565C0) to "আংশিক"
-        DebtStatus.PAID           -> Color(0xFF2E7D32) to "পরিশোধ"
-    }
-    Surface(
-        shape = RoundedCornerShape(4.dp),
-        color = color.copy(alpha = 0.12f)
-    ) {
-        Text(
-            status.label,
-            style    = MaterialTheme.typography.labelSmall,
-            color    = color,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp)
-        )
-    }
-}
-
-// ─── Helper ───────────────────────────────────────────────────────────────────
-
-fun formatTaka(amount: Double): String {
-    return "৳" + String.format(Locale.US, "%,.0f", amount)
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.mysecondrain.R
 import com.mysecondrain.domain.model.Debt
 import com.mysecondrain.domain.model.DebtPayment
 import com.mysecondrain.domain.model.DebtType
@@ -185,18 +187,20 @@ fun AddEditDebtScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("মুছে ফেলবেন?") },
-            text  = { Text("এই হিসাবটি স্থায়ীভাবে মুছে যাবে।") },
+            title = { Text(stringResource(R.string.debt_delete_confirm_title)) },
+            text  = { Text(stringResource(R.string.debt_delete_confirm_text, state.personName)) },
             confirmButton = {
                 TextButton(
                     onClick = { viewModel.delete(); showDeleteDialog = false },
                     colors  = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     )
-                ) { Text("মুছুন") }
+                ) { Text(stringResource(R.string.debt_delete)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("বাতিল") }
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.debt_cancel))
+                }
             }
         )
     }
@@ -217,7 +221,7 @@ fun AddEditDebtScreen(
             TopAppBar(
                 title = {
                     Text(
-                        if (state.isEditMode) "হিসাব সম্পাদনা" else "নতুন হিসাব",
+                        stringResource(if (state.isEditMode) R.string.debt_edit else R.string.debt_new),
                         fontWeight = FontWeight.SemiBold
                     )
                 },
@@ -240,7 +244,7 @@ fun AddEditDebtScreen(
                         if (state.isSaving)
                             CircularProgressIndicator(Modifier.size(16.dp))
                         else
-                            Text("Save", fontWeight = FontWeight.SemiBold)
+                            Text(stringResource(R.string.debt_save), fontWeight = FontWeight.SemiBold)
                     }
                 }
             )
@@ -259,7 +263,7 @@ fun AddEditDebtScreen(
             ) {
                 // Debt Type selector
                 item {
-                    Text("ধরন",
+                    Text(stringResource(R.string.debt_type_label),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(6.dp))
@@ -267,7 +271,7 @@ fun AddEditDebtScreen(
                         FilterChip(
                             selected = state.debtType == DebtType.OWES_ME,
                             onClick  = { viewModel.onDebtTypeChange(DebtType.OWES_ME) },
-                            label    = { Text("আমি পাই") },
+                            label    = { Text(stringResource(R.string.debt_owed_to_me)) },
                             leadingIcon = {
                                 Icon(Icons.Outlined.TrendingUp, null, modifier = Modifier.size(16.dp))
                             },
@@ -281,7 +285,7 @@ fun AddEditDebtScreen(
                         FilterChip(
                             selected = state.debtType == DebtType.I_OWE,
                             onClick  = { viewModel.onDebtTypeChange(DebtType.I_OWE) },
-                            label    = { Text("আমি দেই") },
+                            label    = { Text(stringResource(R.string.debt_i_owe)) },
                             leadingIcon = {
                                 Icon(Icons.Outlined.TrendingDown, null, modifier = Modifier.size(16.dp))
                             },
@@ -300,7 +304,7 @@ fun AddEditDebtScreen(
                     OutlinedTextField(
                         value         = state.personName,
                         onValueChange = viewModel::onPersonNameChange,
-                        label         = { Text("ব্যক্তির নাম *") },
+                        label         = { Text(stringResource(R.string.debt_person_name)) },
                         modifier      = Modifier.fillMaxWidth(),
                         singleLine    = true,
                         leadingIcon   = { Icon(Icons.Outlined.Person, null) }
@@ -312,7 +316,7 @@ fun AddEditDebtScreen(
                     OutlinedTextField(
                         value         = state.totalAmount,
                         onValueChange = viewModel::onAmountChange,
-                        label         = { Text("টাকার পরিমাণ *") },
+                        label         = { Text(stringResource(R.string.debt_amount)) },
                         modifier      = Modifier.fillMaxWidth(),
                         singleLine    = true,
                         keyboardOptions = KeyboardOptions(
@@ -330,7 +334,7 @@ fun AddEditDebtScreen(
                     OutlinedTextField(
                         value         = state.reason,
                         onValueChange = viewModel::onReasonChange,
-                        label         = { Text("কারণ (যেমন: হাত খরচ, ধার)") },
+                        label         = { Text(stringResource(R.string.debt_reason)) },
                         modifier      = Modifier.fillMaxWidth(),
                         singleLine    = true,
                         leadingIcon   = { Icon(Icons.Outlined.Notes, null) }
@@ -365,7 +369,7 @@ fun AddEditDebtScreen(
                                 modifier = Modifier.size(20.dp))
                             Spacer(Modifier.width(12.dp))
                             Column {
-                                Text("লেনদেনের তারিখ",
+                                Text(stringResource(R.string.debt_date),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(state.debtDate.format(fmt))
@@ -402,10 +406,10 @@ fun AddEditDebtScreen(
                                 modifier = Modifier.size(20.dp))
                             Spacer(Modifier.width(12.dp))
                             Column(Modifier.weight(1f)) {
-                                Text("ফেরতের তারিখ (ঐচ্ছিক)",
+                                Text(stringResource(R.string.debt_due_date),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text(state.dueDate?.format(fmt) ?: "নির্ধারণ করুন")
+                                Text(state.dueDate?.format(fmt) ?: stringResource(R.string.debt_due_date_set))
                             }
                             if (state.dueDate != null) {
                                 IconButton(onClick = { viewModel.onDueDateChange(null) }) {
@@ -421,7 +425,7 @@ fun AddEditDebtScreen(
                     OutlinedTextField(
                         value         = state.notes,
                         onValueChange = viewModel::onNotesChange,
-                        label         = { Text("নোট") },
+                        label         = { Text(stringResource(R.string.debt_notes)) },
                         modifier      = Modifier.fillMaxWidth(),
                         minLines      = 2,
                         maxLines      = 4,
@@ -429,7 +433,7 @@ fun AddEditDebtScreen(
                     )
                 }
 
-                // ── Payment History (শুধু edit mode এ দেখাবে) ──────────────────
+                // ── Payment History ──────────────────────────────────────────
                 if (state.isEditMode) {
                     item {
                         Spacer(Modifier.height(8.dp))
@@ -454,7 +458,7 @@ fun AddEditDebtScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column {
-                                        Text("পরিশোধিত",
+                                        Text(stringResource(R.string.debt_paid),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         Text(formatTaka(state.paidAmount),
@@ -463,7 +467,7 @@ fun AddEditDebtScreen(
                                             color = Color(0xFF2E7D32))
                                     }
                                     Column(horizontalAlignment = Alignment.End) {
-                                        Text("বাকি",
+                                        Text(stringResource(R.string.debt_remaining),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         Text(formatTaka(remaining),
@@ -482,10 +486,12 @@ fun AddEditDebtScreen(
                                         Icon(Icons.Outlined.Add, null, modifier = Modifier.size(16.dp))
                                         Spacer(Modifier.width(6.dp))
                                         Text(
-                                            if (state.debtType == DebtType.OWES_ME)
-                                                "পরিশোধ পেয়েছি যোগ করুন"
-                                            else
-                                                "পরিশোধ করেছি যোগ করুন"
+                                            stringResource(
+                                                if (state.debtType == DebtType.OWES_ME)
+                                                    R.string.debt_add_payment_received
+                                                else
+                                                    R.string.debt_add_payment_made
+                                            )
                                         )
                                     }
                                 } else {
@@ -494,7 +500,7 @@ fun AddEditDebtScreen(
                                         Icon(Icons.Outlined.CheckCircle, null,
                                             tint = Color(0xFF2E7D32), modifier = Modifier.size(16.dp))
                                         Spacer(Modifier.width(6.dp))
-                                        Text("সম্পূর্ণ পরিশোধিত",
+                                        Text(stringResource(R.string.debt_fully_paid),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = Color(0xFF2E7D32),
                                             fontWeight = FontWeight.Medium)
@@ -507,7 +513,7 @@ fun AddEditDebtScreen(
                     if (state.payments.isNotEmpty()) {
                         item {
                             Spacer(Modifier.height(8.dp))
-                            Text("পরিশোধের ইতিহাস",
+                            Text(stringResource(R.string.debt_payment_history),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.SemiBold)
                         }
@@ -524,93 +530,3 @@ fun AddEditDebtScreen(
 }
 
 // ─── Payment History Item ─────────────────────────────────────────────────────
-
-@Composable
-internal fun PaymentHistoryItem(payment: DebtPayment, accentColor: Color) {
-    val fmt = DateTimeFormatter.ofPattern("d MMM yyyy")
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape    = RoundedCornerShape(10.dp),
-        colors   = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(Icons.Outlined.Receipt, null,
-                tint = accentColor, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(10.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(formatTaka(payment.amount),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = accentColor)
-                if (payment.note.isNotBlank()) {
-                    Text(payment.note,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
-            Text(payment.paymentDate.format(fmt),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.outline)
-        }
-    }
-}
-
-// ─── Add Payment Dialog ───────────────────────────────────────────────────────
-
-@Composable
-internal fun AddPaymentDialog(
-    remainingAmount: Double,
-    onDismiss: () -> Unit,
-    onConfirm: (Double, String) -> Unit
-) {
-    var amount by remember { mutableStateOf("") }
-    var note   by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("পরিশোধ যোগ করুন", fontWeight = FontWeight.SemiBold) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    "বাকি আছে: ${formatTaka(remainingAmount)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlinedTextField(
-                    value = amount,
-                    onValueChange = { if (it.isEmpty() || it.toDoubleOrNull() != null) amount = it },
-                    label = { Text("পরিমাণ") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    leadingIcon = { Text("৳") }
-                )
-                OutlinedTextField(
-                    value = note,
-                    onValueChange = { note = it },
-                    label = { Text("নোট (ঐচ্ছিক)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    amount.toDoubleOrNull()?.let { amt ->
-                        if (amt > 0) onConfirm(amt, note)
-                    }
-                },
-                enabled = amount.toDoubleOrNull()?.let { it > 0 } ?: false
-            ) { Text("যোগ করুন") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("বাতিল") }
-        }
-    )
-}

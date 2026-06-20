@@ -57,4 +57,51 @@
     <string name="voice_error">Could not recognize speech. Please try again.</string>
 
     <string name="widget_description">Shows today\'s pending tasks</string>
+
+    <!-- Debt / Loan Tracker -->
+    <string name="debt_title">Debt / Loan Tracker</string>
+    <string name="debt_owed_to_me">Owed to Me</string>
+    <string name="debt_i_owe">I Owe</string>
+    <string name="debt_new">New Entry</string>
+    <string name="debt_edit">Edit Entry</string>
+    <string name="debt_total_to_receive">I Will Receive</string>
+    <string name="debt_total_to_pay">I Will Pay</string>
+    <string name="debt_net_balance">Net Balance</string>
+    <string name="debt_will_receive">to receive</string>
+    <string name="debt_will_pay">to pay</string>
+    <string name="debt_no_owed_to_me">No one owes you money</string>
+    <string name="debt_no_i_owe">You don\'t owe anyone money</string>
+    <string name="debt_add_hint">Tap + to add a new entry</string>
+    <string name="debt_delete_confirm_title">Delete entry?</string>
+    <string name="debt_delete_confirm_text">This record for \"%1$s\" will be removed.</string>
+    <string name="debt_delete">Delete</string>
+    <string name="debt_cancel">Cancel</string>
+    <string name="debt_total">Total</string>
+    <string name="debt_status_pending">Pending</string>
+    <string name="debt_status_partial">Partially Paid</string>
+    <string name="debt_status_paid">Paid</string>
+
+    <!-- Add/Edit Debt -->
+    <string name="debt_type_label">Type</string>
+    <string name="debt_person_name">Person\'s Name *</string>
+    <string name="debt_amount">Amount *</string>
+    <string name="debt_reason">Reason (e.g. pocket money, loan)</string>
+    <string name="debt_date">Transaction Date</string>
+    <string name="debt_due_date">Due Date (optional)</string>
+    <string name="debt_due_date_set">Set date</string>
+    <string name="debt_notes">Notes</string>
+    <string name="debt_paid">Paid</string>
+    <string name="debt_remaining">Remaining</string>
+    <string name="debt_add_payment_received">Add Payment Received</string>
+    <string name="debt_add_payment_made">Add Payment Made</string>
+    <string name="debt_fully_paid">Fully Paid</string>
+    <string name="debt_payment_history">Payment History</string>
+    <string name="debt_save">Save</string>
+
+    <!-- Payment Dialog -->
+    <string name="debt_payment_dialog_title">Add Payment</string>
+    <string name="debt_payment_remaining">Remaining: %1$s</string>
+    <string name="debt_payment_amount">Amount</string>
+    <string name="debt_payment_note">Note (optional)</string>
+    <string name="debt_payment_add">Add</string>
 </resources>

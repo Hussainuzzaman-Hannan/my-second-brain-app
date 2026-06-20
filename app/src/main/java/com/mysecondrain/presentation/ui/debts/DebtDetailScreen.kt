@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -16,17 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.mysecondrain.R
 import com.mysecondrain.domain.model.Debt
 import com.mysecondrain.domain.model.DebtPayment
-import com.mysecondrain.domain.model.DebtStatus
 import com.mysecondrain.domain.model.DebtType
 import com.mysecondrain.domain.repository.DebtRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -119,18 +118,20 @@ fun DebtDetailScreen(
     if (showDeleteDialog && debt != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("মুছে ফেলবেন?") },
-            text  = { Text("\"${debt.personName}\" এর এই হিসাবটি স্থায়ীভাবে মুছে যাবে।") },
+            title = { Text(stringResource(R.string.debt_delete_confirm_title)) },
+            text  = { Text(stringResource(R.string.debt_delete_confirm_text, debt.personName)) },
             confirmButton = {
                 TextButton(
                     onClick = { viewModel.delete(); showDeleteDialog = false },
                     colors  = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     )
-                ) { Text("মুছুন") }
+                ) { Text(stringResource(R.string.debt_delete)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("বাতিল") }
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.debt_cancel))
+                }
             }
         )
     }
@@ -149,7 +150,7 @@ fun DebtDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("হিসাবের বিস্তারিত", fontWeight = FontWeight.SemiBold) },
+                title = { Text(stringResource(R.string.debt_edit), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Outlined.ArrowBack, "Back")
@@ -187,7 +188,7 @@ fun DebtDetailScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        "হিসাবটি খুঁজে পাওয়া যায়নি",
+                        stringResource(R.string.debt_no_owed_to_me),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -230,7 +231,12 @@ fun DebtDetailScreen(
                                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                                 ) {
                                     Text(
-                                        debt.debtType.label,
+                                        stringResource(
+                                            if (debt.debtType == DebtType.OWES_ME)
+                                                R.string.debt_owed_to_me
+                                            else
+                                                R.string.debt_i_owe
+                                        ),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = accentColor
                                     )
@@ -266,7 +272,7 @@ fun DebtDetailScreen(
                                 ) {
                                     Column {
                                         Text(
-                                            "মোট পরিমাণ",
+                                            stringResource(R.string.debt_total),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -278,7 +284,7 @@ fun DebtDetailScreen(
                                     }
                                     Column {
                                         Text(
-                                            "পরিশোধিত",
+                                            stringResource(R.string.debt_paid),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -291,7 +297,7 @@ fun DebtDetailScreen(
                                     }
                                     Column(horizontalAlignment = Alignment.End) {
                                         Text(
-                                            "বাকি",
+                                            stringResource(R.string.debt_remaining),
                                             style = MaterialTheme.typography.labelSmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -314,10 +320,12 @@ fun DebtDetailScreen(
                                         Icon(Icons.Outlined.Add, null, modifier = Modifier.size(16.dp))
                                         Spacer(Modifier.width(6.dp))
                                         Text(
-                                            if (debt.debtType == DebtType.OWES_ME)
-                                                "পরিশোধ পেয়েছি যোগ করুন"
-                                            else
-                                                "পরিশোধ করেছি যোগ করুন"
+                                            stringResource(
+                                                if (debt.debtType == DebtType.OWES_ME)
+                                                    R.string.debt_add_payment_received
+                                                else
+                                                    R.string.debt_add_payment_made
+                                            )
                                         )
                                     }
                                 } else {
@@ -329,7 +337,7 @@ fun DebtDetailScreen(
                                         )
                                         Spacer(Modifier.width(6.dp))
                                         Text(
-                                            "সম্পূর্ণ পরিশোধিত",
+                                            stringResource(R.string.debt_fully_paid),
                                             style      = MaterialTheme.typography.bodySmall,
                                             color      = Color(0xFF2E7D32),
                                             fontWeight = FontWeight.Medium
@@ -348,7 +356,7 @@ fun DebtDetailScreen(
                         ) {
                             Column {
                                 Text(
-                                    "হিসাবের তারিখ",
+                                    stringResource(R.string.debt_date),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -360,7 +368,7 @@ fun DebtDetailScreen(
                             if (debt.dueDate != null) {
                                 Column(horizontalAlignment = Alignment.End) {
                                     Text(
-                                        "শেষ তারিখ",
+                                        stringResource(R.string.debt_due_date),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -378,7 +386,7 @@ fun DebtDetailScreen(
                             HorizontalDivider()
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                "নোট",
+                                stringResource(R.string.debt_notes),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -396,7 +404,7 @@ fun DebtDetailScreen(
                         HorizontalDivider()
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "পরিশোধের ইতিহাস",
+                            stringResource(R.string.debt_payment_history),
                             style      = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -405,7 +413,7 @@ fun DebtDetailScreen(
                     if (state.payments.isEmpty()) {
                         item {
                             Text(
-                                "এখনো কোনো পরিশোধ যোগ করা হয়নি",
+                                stringResource(R.string.debt_add_hint),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.outline
                             )

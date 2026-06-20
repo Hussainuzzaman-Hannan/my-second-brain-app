@@ -1,5 +1,6 @@
 package com.mysecondrain
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,10 +18,19 @@ import androidx.navigation.compose.rememberNavController
 import com.mysecondrain.presentation.navigation.*
 import com.mysecondrain.presentation.theme.MySecondBrainTheme
 import com.mysecondrain.presentation.ui.splash.SplashScreen
+import com.mysecondrain.util.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    // Activity তৈরি হওয়ার আগেই সঠিক locale apply করে — recreate() করলে এটা আবার call হয়
+    override fun attachBaseContext(newBase: Context) {
+        val prefs = newBase.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val language = prefs.getString("language", "English") ?: "English"
+        val context = LocaleHelper.setLocale(newBase, language)
+        super.attachBaseContext(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,5 +1,6 @@
 package com.mysecondrain.presentation.ui.settings
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +36,7 @@ data class SettingsUiState(
     val dailyReminderMinute: Int = 0,
     val notificationsEnabled: Boolean = true,
     val appVersion: String = "1.0.0",
-    val selectedLanguage: String = "English"   // ← যোগ করা হয়েছে
+    val selectedLanguage: String = "English"
 )
 
 // ─── ViewModel ────────────────────────────────────────────────────────────────
@@ -82,6 +84,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -140,14 +143,19 @@ fun SettingsScreen(
                             listOf("English", "বাংলা").forEach { lang ->
                                 FilterChip(
                                     selected = state.selectedLanguage == lang,
-                                    onClick  = { viewModel.setLanguage(lang) },
+                                    onClick  = {
+                                        if (state.selectedLanguage != lang) {
+                                            viewModel.setLanguage(lang)
+                                            (context as? Activity)?.recreate()
+                                        }
+                                    },
                                     label    = { Text(lang) }
                                 )
                             }
                         }
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "ভাষা পরিবর্তনের পর app restart করুন",
+                            "ভাষা সিলেক্ট করলে app নিজে থেকেই পরিবর্তিত হয়ে যাবে",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
