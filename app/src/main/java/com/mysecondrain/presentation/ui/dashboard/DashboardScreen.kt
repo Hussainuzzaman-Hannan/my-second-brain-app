@@ -669,18 +669,53 @@ private fun EventCard(
 
 // ─── Class Card ───────────────────────────────────────────────────────────────
 
+private enum class ClassTimeState { PAST, ONGOING, UPCOMING, UNKNOWN }
+
 @Composable
 private fun ClassCard(
     event: Event,
     modifier: Modifier = Modifier
 ) {
+    val now = java.time.LocalTime.now()
+    val timeFormatter = remember {
+        java.time.format.DateTimeFormatter.ofPattern("hh:mm a")
+    }
+
+    val timeState = remember(event.startTime, event.endTime) {
+        try {
+            if (event.startTime.isNotBlank() && event.endTime.isNotBlank()) {
+                val start = java.time.LocalTime.parse(event.startTime)
+                val end   = java.time.LocalTime.parse(event.endTime)
+                when {
+                    now.isAfter(end)                          -> ClassTimeState.PAST
+                    now.isAfter(start) && now.isBefore(end)   -> ClassTimeState.ONGOING
+                    else                                       -> ClassTimeState.UPCOMING
+                }
+            } else ClassTimeState.UNKNOWN
+        } catch (_: Exception) { ClassTimeState.UNKNOWN }
+    }
+
+    val pastColor     = Color(0xFFB71C1C)
+    val ongoingColor  = Color(0xFF1565C0)
+    val upcomingColor = Color(0xFF2E7D32)
+    val defaultColor  = Color(0xFF1565C0)
+
+    val accentColor = when (timeState) {
+        ClassTimeState.PAST     -> pastColor
+        ClassTimeState.ONGOING  -> ongoingColor
+        ClassTimeState.UPCOMING -> upcomingColor
+        ClassTimeState.UNKNOWN  -> defaultColor
+    }
+
+    val isOngoing = timeState == ClassTimeState.ONGOING
+    val cardColor = if (isOngoing) accentColor else accentColor.copy(alpha = 0.08f)
+    val contentColor = if (isOngoing) Color.White else accentColor
+
     Card(
         modifier  = modifier.fillMaxWidth(),
         shape     = RoundedCornerShape(12.dp),
-        colors    = CardDefaults.cardColors(
-            containerColor = Color(0xFF1565C0).copy(alpha = 0.08f)
-        ),
-        elevation = CardDefaults.cardElevation(0.dp)
+        colors    = CardDefaults.cardColors(containerColor = cardColor),
+        elevation = CardDefaults.cardElevation(if (isOngoing) 2.dp else 0.dp)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -691,12 +726,15 @@ private fun ClassCard(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF1565C0).copy(alpha = 0.15f)),
+                    .background(
+                        if (isOngoing) Color.White.copy(alpha = 0.2f)
+                        else accentColor.copy(alpha = 0.15f)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Outlined.MenuBook, null,
-                    tint     = Color(0xFF1565C0),
+                    tint     = contentColor,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -704,44 +742,111 @@ private fun ClassCard(
             Spacer(Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text       = event.title,
-                    style      = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color      = Color(0xFF1565C0),
-                    maxLines   = 1,
-                    overflow   = TextOverflow.Ellipsis
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text       = event.title,
+                        style      = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color      = contentColor,
+                        maxLines   = 1,
+                        overflow   = TextOverflow.Ellipsis
+                    )
+                    if (isOngoing) {
+                        Spacer(Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF4CAF50))
+                        )
+                    }
+                }
                 if (event.personName.isNotBlank()) {
                     Text(
                         text  = event.personName,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFF1565C0).copy(alpha = 0.7f)
+                        color = contentColor.copy(alpha = 0.75f)
                     )
                 }
                 if (event.description.isNotBlank()) {
                     Text(
-                        text  = event.description,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text     = event.description,
+                        style    = MaterialTheme.typography.labelSmall,
+                        color    = contentColor.copy(alpha = 0.65f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
             }
 
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = Color(0xFF1565C0).copy(alpha = 0.12f)
-            ) {
-                Text(
-                    text     = "Class",
-                    style    = MaterialTheme.typography.labelSmall,
-                    color    = Color(0xFF1565C0),
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                )
+            // Time display
+            if (event.startTime.isNotBlank()) {
+                Column(horizontalAlignment = Alignment.End) {
+                    val startFormatted = formatTimeToAmPm(event.startTime, timeFormatter)
+                    val endFormatted   = formatTimeToAmPm(event.endTime, timeFormatter)
+
+                    Text(
+                        text       = startFormatted,
+                        style      = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color      = contentColor
+                    )
+                    if (endFormatted.isNotBlank()) {
+                        Text(
+                            text  = "– $endFormatted",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = contentColor.copy(alpha = 0.75f)
+                        )
+                    }
+                    Spacer(Modifier.height(2.dp))
+                    val statusLabel = when (timeState) {
+                        ClassTimeState.PAST     -> "শেষ"
+                        ClassTimeState.ONGOING  -> "এখন চলছে"
+                        ClassTimeState.UPCOMING -> "আসছে"
+                        ClassTimeState.UNKNOWN  -> ""
+                    }
+                    if (statusLabel.isNotBlank()) {
+                        Surface(
+                            shape = RoundedCornerShape(4.dp),
+                            color = if (isOngoing) Color.White.copy(alpha = 0.25f)
+                            else accentColor.copy(alpha = 0.12f)
+                        ) {
+                            Text(
+                                text     = statusLabel,
+                                style    = MaterialTheme.typography.labelSmall,
+                                color    = contentColor,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp)
+                            )
+                        }
+                    }
+                }
+            } else {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = contentColor.copy(alpha = 0.12f)
+                ) {
+                    Text(
+                        text     = "Class",
+                        style    = MaterialTheme.typography.labelSmall,
+                        color    = contentColor,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
             }
         }
+    }
+}
+
+// সময়কে "HH:mm" থেকে "hh:mm a" (AM/PM) ফরম্যাটে রূপান্তর করে
+private fun formatTimeToAmPm(
+    time: String,
+    formatter: java.time.format.DateTimeFormatter
+): String {
+    if (time.isBlank()) return ""
+    return try {
+        java.time.LocalTime.parse(time).format(formatter)
+    } catch (_: Exception) {
+        time
     }
 }
 

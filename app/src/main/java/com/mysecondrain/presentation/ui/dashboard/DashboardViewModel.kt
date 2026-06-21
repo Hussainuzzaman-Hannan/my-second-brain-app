@@ -84,15 +84,17 @@ class DashboardViewModel @Inject constructor(
                 eventRepository.getAllEvents()
             ) { dayEvents, allEvents ->
 
-                // আজকের তারিখে সরাসরি পড়া class (non-recurring বা প্রথমবার)
-                val directClasses = dayEvents.filter { it.eventType == EventType.CLASS }
+                // আজকের তারিখে সরাসরি পড়া one-time class (weekly recurring নয়)
+                val directClasses = dayEvents.filter {
+                    it.eventType == EventType.CLASS && !it.isWeeklyRecurring
+                }
 
-                // Weekly recurring class — আজকের weekday এর সাথে মিললে দেখাবে
+                // Weekly recurring class — শুধু আজকের weekday এর সাথে মিললে দেখাবে
                 val weeklyClasses = allEvents.filter { event ->
                     event.eventType == EventType.CLASS &&
                             event.isWeeklyRecurring &&
                             event.weeklyDay == todayWeekDay &&
-                            event.eventDate <= today   // শুরুর তারিখ আজকের আগে বা সমান হতে হবে
+                            event.eventDate <= today
                 }
 
                 val allTodayClasses = (directClasses + weeklyClasses)

@@ -32,6 +32,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
@@ -403,7 +404,7 @@ fun AddEditEventScreen(
                                                 },
                                                 cal.get(Calendar.HOUR_OF_DAY),
                                                 cal.get(Calendar.MINUTE),
-                                                true
+                                                false   // ← 12-hour AM/PM picker
                                             ).show()
                                         },
                                     shape = RoundedCornerShape(12.dp)
@@ -414,7 +415,7 @@ fun AddEditEventScreen(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         Spacer(Modifier.height(2.dp))
                                         Text(
-                                            text  = state.startTime.ifBlank { "-- : --" },
+                                            text  = formatTimeDisplay(state.startTime),
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.SemiBold,
                                             color = if (state.startTime.isNotBlank())
@@ -438,7 +439,7 @@ fun AddEditEventScreen(
                                                 },
                                                 cal.get(Calendar.HOUR_OF_DAY),
                                                 cal.get(Calendar.MINUTE),
-                                                true
+                                                false   // ← 12-hour AM/PM picker
                                             ).show()
                                         },
                                     shape = RoundedCornerShape(12.dp)
@@ -449,7 +450,7 @@ fun AddEditEventScreen(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         Spacer(Modifier.height(2.dp))
                                         Text(
-                                            text  = state.endTime.ifBlank { "-- : --" },
+                                            text  = formatTimeDisplay(state.endTime),
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.SemiBold,
                                             color = if (state.endTime.isNotBlank())
@@ -560,5 +561,16 @@ fun AddEditEventScreen(
                 item { Spacer(Modifier.height(60.dp)) }
             }
         }
+    }
+}
+
+// "14:30" → "02:30 PM" এ রূপান্তর করে
+private fun formatTimeDisplay(time: String): String {
+    if (time.isBlank()) return "-- : --"
+    return try {
+        LocalTime.parse(time)
+            .format(DateTimeFormatter.ofPattern("hh:mm a"))
+    } catch (_: Exception) {
+        time
     }
 }
