@@ -1,5 +1,7 @@
 package com.mysecondrain.presentation.ui.search
 
+import com.mysecondrain.presentation.ui.debts.formatTaka
+import com.mysecondrain.domain.repository.DebtRepository
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -53,7 +55,8 @@ class SearchViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
     private val meetingRepository: MeetingRepository,
     private val noteRepository: NoteRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val debtRepository: DebtRepository    // ← নতুন
 ) : ViewModel() {
 
     private val _query = MutableStateFlow("")
@@ -116,6 +119,23 @@ class SearchViewModel @Inject constructor(
                             ))
                         }
 
+                        debtRepository.searchDebts(q).first().forEach { debt ->
+                            results.add(SearchResult(
+                                id       = debt.id,
+                                title    = debt.personName,
+                                subtitle = debt.reason.ifBlank {
+                                    if (debt.debtType.name == "OWES_ME")
+                                        "পাবো: ${formatTaka(debt.totalAmount)}"
+                                    else
+                                        "দিবো: ${formatTaka(debt.totalAmount)}"
+                                },
+                                type     = "Debt",
+                                color    = if (debt.debtType.name == "OWES_ME")
+                                    Color(0xFF2E7D32) else Color(0xFFC62828),
+                                icon     = Icons.Outlined.AccountBalance
+                            ))
+                        }
+
                         _uiState.update {
                             it.copy(query = q, results = results, isSearching = false)
                         }
@@ -142,6 +162,7 @@ class SearchViewModel @Inject constructor(
 fun SearchScreen(
     onTaskClick: (Long) -> Unit,
     onNoteClick: (Long) -> Unit,
+    onDebtClick: (Long) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -246,6 +267,7 @@ fun SearchScreen(
                                 when (result.type) {
                                     "Task" -> onTaskClick(result.id)
                                     "Note" -> onNoteClick(result.id)
+                                    "Debt" -> onDebtClick(result.id)
                                     else   -> {}
                                 }
                             }

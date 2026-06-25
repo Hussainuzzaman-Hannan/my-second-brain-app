@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,6 +40,8 @@ data class StatisticsUiState(
     val tasksByCategory: Map<String, Int> = emptyMap(),
     val tasksByPriority: Map<String, Int> = emptyMap(),
     val completionRate: Float = 0f,
+    val totalOwedToMe: Double = 0.0,
+    val totalIOwe: Double = 0.0,
     val isLoading: Boolean = true
 )
 
@@ -49,13 +50,15 @@ class StatisticsViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
     private val meetingRepository: MeetingRepository,
     private val noteRepository: NoteRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val debtRepository: DebtRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
 
     init {
+        // Tasks, Meetings, Notes, Events
         viewModelScope.launch {
             combine(
                 taskRepository.getAllTasks(),
@@ -65,20 +68,19 @@ class StatisticsViewModel @Inject constructor(
             ) { tasks, meetings, notes, events ->
                 val completed = tasks.count { it.isCompleted }
                 val pending   = tasks.count { !it.isCompleted }
-                val urgent    = tasks.count { it.priority == Priority.URGENT && !it.isCompleted }
-
+                val urgent    = tasks.count {
+                    it.priority == Priority.URGENT && !it.isCompleted
+                }
                 val byCategory = tasks
                     .groupBy { it.category?.name ?: "Uncategorized" }
                     .mapValues { it.value.size }
-
                 val byPriority = tasks
                     .groupBy { it.priority.label }
                     .mapValues { it.value.size }
-
                 val rate = if (tasks.isEmpty()) 0f
                 else (completed.toFloat() / tasks.size) * 100f
 
-                StatisticsUiState(
+                _uiState.value.copy(
                     totalTasks      = tasks.size,
                     completedTasks  = completed,
                     pendingTasks    = pending,
@@ -92,6 +94,21 @@ class StatisticsViewModel @Inject constructor(
                     isLoading       = false
                 )
             }.collect { _uiState.value = it }
+        }
+
+        // Debt summary
+        viewModelScope.launch {
+            combine(
+                debtRepository.getTotalOwedToMe(),
+                debtRepository.getTotalIOwe()
+            ) { owedToMe, iOwe ->
+                _uiState.update {
+                    it.copy(
+                        totalOwedToMe = owedToMe,
+                        totalIOwe     = iOwe
+                    )
+                }
+            }.collect {}
         }
     }
 }
@@ -116,7 +133,8 @@ fun StatisticsScreen(
         }
     ) { padding ->
         if (state.isLoading) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            Box(Modifier.fillMaxSize().padding(padding),
+                contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         } else {
@@ -125,7 +143,7 @@ fun StatisticsScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Overview cards
+                // ── Overview ──────────────────────────────────────────────────
                 item {
                     Text("Overview",
                         style = MaterialTheme.typography.titleMedium,
@@ -150,7 +168,6 @@ fun StatisticsScreen(
                     }
                 }
 
-                // Second row
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -171,17 +188,110 @@ fun StatisticsScreen(
                     }
                 }
 
-                // Completion rate
+                // ── Completion Rate ───────────────────────────────────────────
                 item {
                     CompletionRateCard(rate = state.completionRate)
                 }
 
-                // Priority breakdown
+                // ── Debt Summary ──────────────────────────────────────────────
+                item {
+                    Text(
+                        "হিসাব / পাওনা-দেনা",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // আমি পাবো
+                        Card(
+                            modifier = Modifier.weight(1f),
+                            shape    = RoundedCornerShape(12.dp),
+                            colors   = CardDefaults.cardColors(
+                                containerColor = Color(0xFF2E7D32).copy(alpha = 0.08f)
+                            )
+                        ) {
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Icon(Icons.Outlined.TrendingUp, null,
+                                    tint     = Color(0xFF2E7D32),
+                                    modifier = Modifier.size(20.dp))
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "৳${String.format("%.0f", state.totalOwedToMe)}",
+                                    style      = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color      = Color(0xFF2E7D32)
+                                )
+                                Text("আমি পাবো",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFF2E7D32).copy(alpha = 0.8f))
+                            }
+                        }
+
+                        // আমি দিবো
+                        Card(
+                            modifier = Modifier.weight(1f),
+                            shape    = RoundedCornerShape(12.dp),
+                            colors   = CardDefaults.cardColors(
+                                containerColor = Color(0xFFC62828).copy(alpha = 0.08f)
+                            )
+                        ) {
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Icon(Icons.Outlined.TrendingDown, null,
+                                    tint     = Color(0xFFC62828),
+                                    modifier = Modifier.size(20.dp))
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "৳${String.format("%.0f", state.totalIOwe)}",
+                                    style      = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color      = Color(0xFFC62828)
+                                )
+                                Text("আমি দিবো",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFFC62828).copy(alpha = 0.8f))
+                            }
+                        }
+
+                        // নিট ব্যালেন্স
+                        val net = state.totalOwedToMe - state.totalIOwe
+                        val netColor = if (net >= 0) Color(0xFF2E7D32) else Color(0xFFC62828)
+                        Card(
+                            modifier = Modifier.weight(1f),
+                            shape    = RoundedCornerShape(12.dp),
+                            colors   = CardDefaults.cardColors(
+                                containerColor = netColor.copy(alpha = 0.08f)
+                            )
+                        ) {
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Icon(Icons.Outlined.AccountBalance, null,
+                                    tint     = netColor,
+                                    modifier = Modifier.size(20.dp))
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "৳${String.format("%.0f", kotlin.math.abs(net))}",
+                                    style      = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color      = netColor
+                                )
+                                Text(
+                                    if (net >= 0) "নিট পাবো" else "নিট দিবো",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = netColor.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // ── Priority Breakdown ────────────────────────────────────────
                 if (state.tasksByPriority.isNotEmpty()) {
                     item {
                         BreakdownCard(
-                            title = "Tasks by Priority",
-                            data  = state.tasksByPriority,
+                            title    = "Tasks by Priority",
+                            data     = state.tasksByPriority,
                             colorMap = mapOf(
                                 "Low"    to Color(0xFF2E7D32),
                                 "Medium" to Color(0xFF1565C0),
@@ -192,12 +302,12 @@ fun StatisticsScreen(
                     }
                 }
 
-                // Category breakdown
+                // ── Category Breakdown ────────────────────────────────────────
                 if (state.tasksByCategory.isNotEmpty()) {
                     item {
                         BreakdownCard(
-                            title = "Tasks by Category",
-                            data  = state.tasksByCategory,
+                            title    = "Tasks by Category",
+                            data     = state.tasksByCategory,
                             colorMap = emptyMap()
                         )
                     }
@@ -275,7 +385,7 @@ private fun CompletionRateCard(rate: Float) {
                     .fillMaxWidth()
                     .height(10.dp)
                     .clip(CircleShape),
-                color            = when {
+                color      = when {
                     rate >= 75f -> Color(0xFF2E7D32)
                     rate >= 50f -> Color(0xFF1565C0)
                     rate >= 25f -> Color(0xFFE65100)
@@ -350,8 +460,8 @@ private fun BreakdownCard(
                             color = color)
                         Spacer(Modifier.width(8.dp))
                         LinearProgressIndicator(
-                            progress = { fraction },
-                            modifier = Modifier
+                            progress   = { fraction },
+                            modifier   = Modifier
                                 .width(80.dp)
                                 .height(6.dp)
                                 .clip(CircleShape),

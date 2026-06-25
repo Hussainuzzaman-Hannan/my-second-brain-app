@@ -110,6 +110,7 @@ class CalendarViewModel @Inject constructor(
     fun classesForDate(date: LocalDate): List<Event> {
         val weekDay = toWeekDay(date)
 
+        // One-time class — শুধু exact date match
         val directClasses = _uiState.value.events.filter { event ->
             event.eventType == EventType.CLASS &&
                     !event.isWeeklyRecurring &&
@@ -118,11 +119,12 @@ class CalendarViewModel @Inject constructor(
                     event.eventDate.year == date.year
         }
 
+        // Weekly recurring class — শুধু সেই weekday এ দেখাবে
         val weeklyClasses = _uiState.value.events.filter { event ->
             event.eventType == EventType.CLASS &&
                     event.isWeeklyRecurring &&
                     event.weeklyDay == weekDay &&
-                    event.eventDate <= date   // শুরুর তারিখের পর থেকেই দেখাবে
+                    event.eventDate <= date
         }
 
         return (directClasses + weeklyClasses)
