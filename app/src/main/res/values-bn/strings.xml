@@ -139,4 +139,78 @@
     <string name="debt_payment_amount">পরিমাণ</string>
     <string name="debt_payment_note">নোট (ঐচ্ছিক)</string>
     <string name="debt_payment_add">যোগ করুন</string>
+
+    <!-- About screen -->
+    <string name="about_menu_title">অ্যাপ সম্পর্কে</string>
+    <string name="about_menu_subtitle">ফিচার ও ব্যবহারবিধি</string>
+    <string name="about_title">মাই সেকেন্ড ব্রেইন সম্পর্কে</string>
+    <string name="about_tagline">আপনার ব্যক্তিগত জীবন-সহায়ক — কাজ, রুটিন, নোট, টাকার হিসাব আর আরও অনেক কিছু, একটি জায়গায়।</string>
+    <string name="about_intro">মাই সেকেন্ড ব্রেইন আপনার প্রতিদিনের জীবন গুছিয়ে রাখতে সাহায্য করে — আপনার কাজ, মিটিং, ক্লাস, গুরুত্বপূর্ণ তারিখ, নোট, এবং পাওনা-দেনার হিসাব — সবকিছু আপনার নিজের ফোনেই সংরক্ষিত থাকে। নিচের যেকোনো ফিচারে চাপুন, সেটি কী করে এবং কীভাবে ব্যবহার করবেন জানতে।</string>
+
+    <string name="about_section_features">ফিচারসমূহ</string>
+
+    <string name="about_feature_dashboard_title">হোম</string>
+    <string name="about_feature_dashboard_desc">আপনার দিনের সারসংক্ষেপ — আজকের কাজ, আসন্ন মিটিং, এবং আজকের ক্লাস বা ইভেন্ট, সব এক স্ক্রিনে।</string>
+    <string name="about_feature_dashboard_howto">অ্যাপ খুললেই এই স্ক্রিন দেখবেন। কোনো আইটেমে চাপলে সরাসরি সেখানে চলে যাবেন, বা সার্চ আইকনে চেপে যেকোনো কিছু দ্রুত খুঁজে নিতে পারবেন।</string>
+
+    <string name="about_feature_tasks_title">কাজ (Tasks)</string>
+    <string name="about_feature_tasks_desc">আপনার করণীয় সব কাজের তালিকা — প্রায়োরিটি, ক্যাটাগরি, শেষ তারিখ এবং রিমাইন্ডার সহ।</string>
+    <string name="about_feature_tasks_howto">+ বাটনে চেপে নতুন কাজ যুক্ত করুন। প্রয়োজনে প্রায়োরিটি ও তারিখ/সময় সেট করুন। কাজ সম্পন্ন হলে চেকবক্সে চাপুন, বা এডিট করতে কাজটির উপর চাপুন।</string>
+
+    <string name="about_feature_calendar_title">ক্যালেন্ডার</string>
+    <string name="about_feature_calendar_desc">আপনার সব কাজ তারিখ অনুযায়ী সাজানো দেখুন, যাতে সামনে কী আসছে তা সহজেই বুঝতে পারেন।</string>
+    <string name="about_feature_calendar_howto">কোনো তারিখে চাপলে সেদিনের কাজগুলো দেখাবে। সেই তারিখের জন্য সরাসরি নতুন কাজ যুক্ত করতে + চাপুন।</string>
+
+    <string name="about_feature_notes_title">নোট</string>
+    <string name="about_feature_notes_desc">প্রয়োজনীয় ভাবনা, পাঠদান সংক্রান্ত নোট, বা যা মনে রাখতে চান — টাইপ ও রঙ অনুযায়ী সাজানো।</string>
+    <string name="about_feature_notes_howto">+ চেপে নতুন নোট লিখুন। গুরুত্বপূর্ণ নোট পিন করে রাখুন, যাতে সেটি সবসময় উপরে থাকে।</string>
+
+    <string name="about_feature_meetings_title">মিটিং</string>
+    <string name="about_feature_meetings_desc">কার সাথে, কোথায়, কখন মিটিং — সব ট্র্যাক করুন, সাথে ঐচ্ছিক রিমাইন্ডার।</string>
+    <string name="about_feature_meetings_howto">More থেকে Meetings-এ চাপুন, তারপর + চেপে নতুন মিটিং যুক্ত করুন। রিমাইন্ডার সেট করলে শুরুর আগে নোটিফিকেশন পাবেন।</string>
+
+    <string name="about_feature_events_title">ইভেন্ট</string>
+    <string name="about_feature_events_desc">জন্মদিন, বার্ষিকী, স্কুল ইভেন্ট, বা সাপ্তাহিক ক্লাস — কখনো ভুলে যাবেন না।</string>
+    <string name="about_feature_events_howto">More থেকে Events-এ চাপুন, তারপর +। ইভেন্টটি বাৎসরিক রিকারিং (জন্মদিনের মতো) করুন বা সাপ্তাহিক ক্লাসের দিন বেছে নিন, এবং কত দিন আগে রিমাইন্ডার চান তা সেট করুন।</string>
+
+    <string name="about_feature_debts_title">হিসাব (পাওনা-দেনা)</string>
+    <string name="about_feature_debts_desc">কার কাছে টাকা পাবেন বা কাকে দিতে হবে, তার সম্পূর্ণ পরিশোধের ইতিহাস সহ ট্র্যাক করুন।</string>
+    <string name="about_feature_debts_howto">More থেকে হিসাব-এ চাপুন। \"আমি দেই\" ও \"আমি পাই\" ট্যাবের মধ্যে পরিবর্তন করুন, + চেপে নতুন হিসাব যুক্ত করুন, এবং কোনো এন্ট্রিতে চেপে বিস্তারিত দেখুন, আংশিক পরিশোধ যুক্ত করুন, বা সম্পূর্ণ পরিশোধিত চিহ্নিত করুন।</string>
+
+    <string name="about_feature_voice_title">ভয়েস এন্ট্রি</string>
+    <string name="about_feature_voice_desc">টাইপ না করে বলে দিন — হাত খালি রেখেই দ্রুত কাজ বা রিমাইন্ডার যুক্ত করুন।</string>
+    <string name="about_feature_voice_howto">More থেকে Voice Entry-এ চাপুন, তারপর মাইক্রোফোন আইকনে চেপে স্বাভাবিকভাবে বলুন। আপনার কথা স্বয়ংক্রিয়ভাবে একটি কাজে রূপান্তরিত হবে।</string>
+
+    <string name="about_feature_statistics_title">পরিসংখ্যান</string>
+    <string name="about_feature_statistics_desc">আপনি কেমন করছেন তার একটি চিত্র — কাজ সম্পন্নের হার, মোট সংখ্যা, এবং সময়ের সাথে পরিবর্তন।</string>
+    <string name="about_feature_statistics_howto">More থেকে Statistics-এ চাপুন আপনার অগ্রগতি দেখতে। কোনো সেটআপ লাগে না — কাজ সম্পন্ন করার সাথে সাথে এটি নিজেই আপডেট হয়।</string>
+
+    <string name="about_feature_categories_title">ক্যাটাগরি</string>
+    <string name="about_feature_categories_desc">কাজ ও নোটকে Teaching, Family, Personal, Finance-এর মতো গ্রুপে সাজান।</string>
+    <string name="about_feature_categories_howto">More থেকে Categories-এ চাপুন নিজের ক্যাটাগরি যুক্ত করতে, বা বিদ্যমান ক্যাটাগরির রঙ ও আইকন পরিবর্তন করতে।</string>
+
+    <string name="about_feature_backup_title">ব্যাকআপ ও রিস্টোর</string>
+    <string name="about_feature_backup_desc">আপনার সব ডেটার একটি নিরাপদ কপি রাখুন, যাতে কখনো হারিয়ে না যায়।</string>
+    <string name="about_feature_backup_howto">More থেকে Backup-এ চাপুন। নিয়মিত আপনার ডেটা এক্সপোর্ট করুন, এবং ফোন বদলালে বা অ্যাপ পুনরায় ইনস্টল করলে Restore ব্যবহার করুন।</string>
+
+    <string name="about_feature_widget_title">হোম স্ক্রিন উইজেট</string>
+    <string name="about_feature_widget_desc">অ্যাপ না খুলেই হোম স্ক্রিনে আজকের মুলতুবি কাজ দেখুন।</string>
+    <string name="about_feature_widget_howto">হোম স্ক্রিনে লং-প্রেস করুন, Widgets-এ চাপুন, My Second Brain খুঁজুন, এবং Tasks উইজেটটি আপনার স্ক্রিনে টেনে আনুন।</string>
+
+    <string name="about_feature_reminders_title">রিমাইন্ডার ও নোটিফিকেশন</string>
+    <string name="about_feature_reminders_desc">কাজের সময়সীমার আগে নোটিফিকেশন পান, সাথে ঐচ্ছিক দৈনিক সকালের সারসংক্ষেপ।</string>
+    <string name="about_feature_reminders_howto">Settings → Notifications থেকে এগুলো যেকোনো সময় চালু/বন্ধ করুন। দৈনিক সারসংক্ষেপের পছন্দের সময়ও সেখানে সেট করতে পারবেন।</string>
+
+    <string name="about_section_tips">কিছু টিপস</string>
+    <string name="about_tip_1">আপনার সব ডেটা আপনার ফোনেই থাকে — কোথাও আপলোড করা হয় না।</string>
+    <string name="about_tip_2">Settings থেকে যেকোনো সময় English ও বাংলার মধ্যে পরিবর্তন করতে পারবেন।</string>
+    <string name="about_tip_3">ফোন পরিবর্তনের আগে বিশেষ করে, Settings → Backup &amp; Restore থেকে নিয়মিত ডেটা ব্যাকআপ রাখুন।</string>
+    <string name="about_made_for">দৈনন্দিন জীবন, পাঠদানের কাজ এবং ব্যক্তিগত গোছানোর জন্য তৈরি — সবকিছু একটি অ্যাপে।</string>
+
+    <!-- Developer info -->
+    <string name="about_developer_title">তৈরি করেছেন</string>
+    <string name="about_developer_names">মো. হুসাইনুজ্জামান হান্নান ও জায়ানিফাই টিম</string>
+    <string name="about_developer_whatsapp">হোয়াটসঅ্যাপ</string>
+    <string name="about_developer_telegram">টেলিগ্রাম</string>
+    <string name="about_developer_email">ইমেইল</string>
 </resources>

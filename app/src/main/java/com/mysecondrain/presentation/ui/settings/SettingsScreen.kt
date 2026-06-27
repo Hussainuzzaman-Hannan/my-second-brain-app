@@ -1,5 +1,7 @@
 package com.mysecondrain.presentation.ui.settings
 
+import androidx.compose.ui.res.stringResource
+import com.mysecondrain.R
 import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.*
@@ -79,6 +81,8 @@ class SettingsViewModel @Inject constructor(
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
+    onAboutClick: () -> Unit,
+    onBackupClick: () -> Unit,    // ← নতুন প্যারামিটার
     isDarkMode: Boolean,
     onToggleDark: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
@@ -210,15 +214,24 @@ fun SettingsScreen(
                     title    = "Backup & Restore",
                     subtitle = "Export or import your data",
                     color    = Color(0xFF2E7D32),
-                    onClick  = {}
+                    onClick  = onBackupClick      // ← আগে {} ছিল
                 )
             }
 
             // About
             item { SettingsSectionHeader("About") }
             item {
-                SettingsInfoItem(
+                SettingsActionItem(
                     icon     = Icons.Outlined.Info,
+                    title    = stringResource(R.string.about_menu_title),
+                    subtitle = stringResource(R.string.about_menu_subtitle),
+                    color    = MaterialTheme.colorScheme.primary,
+                    onClick  = onAboutClick
+                )
+            }
+            item {
+                SettingsInfoItem(
+                    icon     = Icons.Outlined.Tag,
                     title    = "Version",
                     subtitle = state.appVersion,
                     color    = MaterialTheme.colorScheme.primary

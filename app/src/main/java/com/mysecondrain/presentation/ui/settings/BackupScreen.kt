@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,7 +27,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,7 +50,7 @@ class BackupViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BackupUiState())
     val uiState: StateFlow<BackupUiState> = _uiState.asStateFlow()
 
-    fun backup() {
+    fun backup(targetUri: Uri) {
         _uiState.update { it.copy(isBackingUp = true, message = null) }
         viewModelScope.launch {
             try {
@@ -64,22 +62,22 @@ class BackupViewModel @Inject constructor(
                     }
                     return@launch
                 }
-                val backupDir = File(
-                    context.getExternalFilesDir(null), "MySecondBrain/backups"
-                )
-                backupDir.mkdirs()
+                context.contentResolver.openOutputStream(targetUri)?.use { output ->
+                    dbFile.inputStream().use { input ->
+                        input.copyTo(output)
+                    }
+                } ?: throw java.io.IOException("Could not open destination file")
+
                 val timestamp = SimpleDateFormat(
                     "yyyy-MM-dd_HH-mm", Locale.getDefault()
                 ).format(Date())
-                val backupFile = File(backupDir, "backup_$timestamp.db")
-                dbFile.copyTo(backupFile, overwrite = true)
 
                 _uiState.update {
                     it.copy(
-                        isBackingUp  = false,
+                        isBackingUp    = false,
                         lastBackupTime = timestamp,
-                        message      = "Backup saved to:\n${backupFile.absolutePath}",
-                        isSuccess    = true
+                        message        = "Backup saved successfully",
+                        isSuccess      = true
                     )
                 }
             } catch (e: Exception) {
@@ -131,6 +129,12 @@ fun BackupScreen(
     viewModel: BackupViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
+
+    val backupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/octet-stream")
+    ) { uri ->
+        uri?.let { viewModel.backup(it) }
+    }
 
     val restoreLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -197,11 +201,16 @@ fun BackupScreen(
             BackupActionCard(
                 icon      = Icons.Outlined.Backup,
                 title     = "Backup Data",
-                subtitle  = "Save all your data to device storage",
+                subtitle  = "Choose where to save your data",
                 buttonText = if (state.isBackingUp) "Backing up..." else "Create Backup",
                 color     = Color(0xFF2E7D32),
                 isLoading = state.isBackingUp,
-                onClick   = viewModel::backup
+                onClick   = {
+                    val timestamp = SimpleDateFormat(
+                        "yyyy-MM-dd_HH-mm", Locale.getDefault()
+                    ).format(Date())
+                    backupLauncher.launch("MySecondBrain_backup_$timestamp.db")
+                }
             )
 
             // Restore card

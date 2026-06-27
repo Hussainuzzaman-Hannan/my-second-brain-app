@@ -1,5 +1,6 @@
 package com.mysecondrain.presentation.navigation
 
+import com.mysecondrain.presentation.ui.settings.AboutScreen
 import com.mysecondrain.presentation.ui.settings.CategoriesScreen
 import com.mysecondrain.presentation.ui.settings.BackupScreen
 import androidx.compose.animation.*
@@ -153,7 +154,8 @@ fun AppNavGraph(
                 onCategories = { navController.navigate(Screen.Categories.route) },
                 onBackup     = { navController.navigate(Screen.Backup.route) },
                 onSettings   = { navController.navigate(Screen.Settings.route) },
-                onDebts      = { navController.navigate(Screen.Debts.route) }
+                onDebts      = { navController.navigate(Screen.Debts.route) },
+                isDarkMode   = isDarkMode
             )
         }
 
@@ -224,9 +226,18 @@ fun AppNavGraph(
         // ── Settings ──────────────────────────────────────────────────────────
         composable(Screen.Settings.route) {
             SettingsScreen(
-                onBack       = { navController.popBackStack() },
-                isDarkMode   = isDarkMode,
-                onToggleDark = onToggleDark
+                onBack        = { navController.popBackStack() },
+                onAboutClick  = { navController.navigate(Screen.About.route) },
+                onBackupClick = { navController.navigate(Screen.Backup.route) },   // ← নতুন
+                isDarkMode    = isDarkMode,
+                onToggleDark  = onToggleDark
+            )
+        }
+
+        // ── About ─────────────────────────────────────────────────────────────
+        composable(Screen.About.route) {
+            AboutScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 

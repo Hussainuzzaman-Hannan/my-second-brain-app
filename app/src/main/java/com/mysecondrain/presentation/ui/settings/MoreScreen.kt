@@ -22,6 +22,7 @@ data class MoreMenuItem(
     val title: String,
     val icon: ImageVector,
     val color: Color,
+    val darkColor: Color = color,
     val onClick: () -> Unit
 )
 
@@ -37,17 +38,18 @@ fun MoreScreen(
     onCategories: () -> Unit,
     onBackup: () -> Unit,
     onSettings: () -> Unit,
-    onDebts: () -> Unit
+    onDebts: () -> Unit,
+    isDarkMode: Boolean
 ) {
     val menuItems = listOf(
-        MoreMenuItem("Meetings",    Icons.Outlined.Groups,    Color(0xFFE65100), onMeetings),
-        MoreMenuItem("Events",      Icons.Outlined.Cake,      Color(0xFFE91E63), onEvents),
-        MoreMenuItem("হিসাব",       Icons.Outlined.AccountBalanceWallet, Color(0xFF2E7D32), onDebts),
-        MoreMenuItem("Statistics",  Icons.Outlined.BarChart,  Color(0xFF1565C0), onStatistics),
-        MoreMenuItem("Voice Entry", Icons.Outlined.Mic,       Color(0xFF2E7D32), onVoice),
-        MoreMenuItem("Categories",  Icons.Outlined.Category,  Color(0xFF00838F), onCategories),
-        MoreMenuItem("Backup",      Icons.Outlined.Backup,    Color(0xFF4E342E), onBackup),
-        MoreMenuItem("Settings",    Icons.Outlined.Settings,  Color(0xFF6A1B9A), onSettings)
+        MoreMenuItem("Meetings",    Icons.Outlined.Groups,    Color(0xFFE65100), Color(0xFFFFB74D), onMeetings),
+        MoreMenuItem("Events",      Icons.Outlined.Cake,      Color(0xFFE91E63), Color(0xFFF48FB1), onEvents),
+        MoreMenuItem("হিসাব",       Icons.Outlined.AccountBalanceWallet, Color(0xFF2E7D32), Color(0xFF81C784), onDebts),
+        MoreMenuItem("Statistics",  Icons.Outlined.BarChart,  Color(0xFF1565C0), Color(0xFF64B5F6), onStatistics),
+        MoreMenuItem("Voice Entry", Icons.Outlined.Mic,       Color(0xFF2E7D32), Color(0xFF81C784), onVoice),
+        MoreMenuItem("Categories",  Icons.Outlined.Category,  Color(0xFF00838F), Color(0xFF4DD0E1), onCategories),
+        MoreMenuItem("Backup",      Icons.Outlined.Backup,    Color(0xFF4E342E), Color(0xFFBCAAA4), onBackup),
+        MoreMenuItem("Settings",    Icons.Outlined.Settings,  Color(0xFF6A1B9A), Color(0xFFCE93D8), onSettings)
     )
 
     Scaffold(
@@ -79,7 +81,7 @@ fun MoreScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(menuItems) { item ->
-                    MoreMenuCard(item = item)
+                    MoreMenuCard(item = item, isDarkMode = isDarkMode)
                 }
             }
         }
@@ -90,7 +92,10 @@ fun MoreScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MoreMenuCard(item: MoreMenuItem) {
+private fun MoreMenuCard(item: MoreMenuItem, isDarkMode: Boolean) {
+    val accent = if (isDarkMode) item.darkColor else item.color
+    val containerAlpha = if (isDarkMode) 0.18f else 0.08f
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,7 +103,7 @@ private fun MoreMenuCard(item: MoreMenuItem) {
         onClick  = item.onClick,
         shape    = RoundedCornerShape(16.dp),
         colors   = CardDefaults.cardColors(
-            containerColor = item.color.copy(alpha = 0.08f)
+            containerColor = accent.copy(alpha = containerAlpha)
         )
     ) {
         Column(
@@ -110,7 +115,7 @@ private fun MoreMenuCard(item: MoreMenuItem) {
         ) {
             Icon(
                 item.icon, null,
-                tint     = item.color,
+                tint     = accent,
                 modifier = Modifier.size(28.dp)
             )
             Spacer(Modifier.height(8.dp))
@@ -118,7 +123,7 @@ private fun MoreMenuCard(item: MoreMenuItem) {
                 text       = item.title,
                 style      = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color      = item.color
+                color      = accent
             )
         }
     }

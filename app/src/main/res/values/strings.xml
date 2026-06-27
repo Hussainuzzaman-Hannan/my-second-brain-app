@@ -104,4 +104,78 @@
     <string name="debt_payment_amount">Amount</string>
     <string name="debt_payment_note">Note (optional)</string>
     <string name="debt_payment_add">Add</string>
+
+    <!-- About screen -->
+    <string name="about_menu_title">About this App</string>
+    <string name="about_menu_subtitle">Features &amp; how to use</string>
+    <string name="about_title">About My Second Brain</string>
+    <string name="about_tagline">Your personal life assistant — tasks, schedule, notes, money, and more, all in one quiet place.</string>
+    <string name="about_intro">My Second Brain helps you organize your daily life — your tasks, meetings, classes, important dates, notes, and money you owe or are owed — all stored privately on your own device. Tap any feature below to learn what it does and how to use it.</string>
+
+    <string name="about_section_features">Features</string>
+
+    <string name="about_feature_dashboard_title">Home</string>
+    <string name="about_feature_dashboard_desc">Your day at a glance — today\'s tasks, upcoming meetings, and today\'s classes or events, all in one screen.</string>
+    <string name="about_feature_dashboard_howto">Open the app to land here. Tap any item to jump straight to it, or tap the search icon to find anything quickly.</string>
+
+    <string name="about_feature_tasks_title">Tasks</string>
+    <string name="about_feature_tasks_desc">Keep track of everything you need to do, with priority levels, categories, due dates, and reminders.</string>
+    <string name="about_feature_tasks_howto">Tap the + button to add a task. Set a priority and due date/time if needed. Tap the checkbox to mark a task done, or tap the task itself to edit it.</string>
+
+    <string name="about_feature_calendar_title">Calendar</string>
+    <string name="about_feature_calendar_desc">See all your tasks laid out by date, so you always know what\'s coming up.</string>
+    <string name="about_feature_calendar_howto">Tap any date to see tasks due that day. Tap + to add a new task directly for that date.</string>
+
+    <string name="about_feature_notes_title">Notes</string>
+    <string name="about_feature_notes_desc">Jot down quick thoughts, teaching notes, or anything you want to remember — organized by type and color.</string>
+    <string name="about_feature_notes_howto">Tap + to write a new note. Pin important notes so they always stay at the top.</string>
+
+    <string name="about_feature_meetings_title">Meetings</string>
+    <string name="about_feature_meetings_desc">Track meetings with people — who, where, and when — with optional reminders.</string>
+    <string name="about_feature_meetings_howto">From More, tap Meetings, then + to schedule one. You\'ll get a reminder before it starts if you set one.</string>
+
+    <string name="about_feature_events_title">Events</string>
+    <string name="about_feature_events_desc">Never forget birthdays, anniversaries, school events, or recurring classes — yearly or weekly.</string>
+    <string name="about_feature_events_howto">From More, tap Events, then +. Mark an event as yearly recurring (like a birthday) or set a weekly class day, and choose how many days before to be reminded.</string>
+
+    <string name="about_feature_debts_title">হিসাব (Debts / Loans)</string>
+    <string name="about_feature_debts_desc">Track money you owe or are owed, with full payment history for each person.</string>
+    <string name="about_feature_debts_howto">From More, tap হিসাব. Switch between \"I Owe\" and \"Owed to Me\" tabs, tap + to add a new entry, and tap any entry to view details, add a partial payment, or mark it fully paid.</string>
+
+    <string name="about_feature_voice_title">Voice Entry</string>
+    <string name="about_feature_voice_desc">Speak instead of typing — quickly capture a task or reminder hands-free.</string>
+    <string name="about_feature_voice_howto">From More, tap Voice Entry, then tap the microphone and speak naturally. Your words are turned into a task automatically.</string>
+
+    <string name="about_feature_statistics_title">Statistics</string>
+    <string name="about_feature_statistics_desc">A look back at how you\'re doing — task completion rate, totals, and trends over time.</string>
+    <string name="about_feature_statistics_howto">From More, tap Statistics to see your progress. No setup needed — it updates automatically as you complete tasks.</string>
+
+    <string name="about_feature_categories_title">Categories</string>
+    <string name="about_feature_categories_desc">Organize tasks and notes into groups like Teaching, Family, Personal, or Finance.</string>
+    <string name="about_feature_categories_howto">From More, tap Categories to add your own, or edit the colors and icons of existing ones.</string>
+
+    <string name="about_feature_backup_title">Backup &amp; Restore</string>
+    <string name="about_feature_backup_desc">Keep a safe copy of all your data, so you never lose it.</string>
+    <string name="about_feature_backup_howto">From More, tap Backup. Export your data to a file periodically, and use Restore if you ever switch phones or reinstall the app.</string>
+
+    <string name="about_feature_widget_title">Home Screen Widget</string>
+    <string name="about_feature_widget_desc">See today\'s pending tasks right on your home screen, without opening the app.</string>
+    <string name="about_feature_widget_howto">Long-press your home screen, tap Widgets, find My Second Brain, and drag the Tasks widget onto your screen.</string>
+
+    <string name="about_feature_reminders_title">Reminders &amp; Notifications</string>
+    <string name="about_feature_reminders_desc">Get notified before tasks are due, plus an optional daily morning summary.</string>
+    <string name="about_feature_reminders_howto">Turn these on or off anytime from Settings → Notifications. Set your preferred daily summary time there too.</string>
+
+    <string name="about_section_tips">Tips</string>
+    <string name="about_tip_1">All your data stays on your device — nothing is uploaded anywhere.</string>
+    <string name="about_tip_2">Switch between English and বাংলা anytime from Settings.</string>
+    <string name="about_tip_3">Back up your data regularly from Settings → Backup &amp; Restore, especially before changing phones.</string>
+    <string name="about_made_for">Built for managing daily life, teaching work, and personal organization — all in one app.</string>
+
+    <!-- Developer info -->
+    <string name="about_developer_title">Developed By</string>
+    <string name="about_developer_names">Md. Hussainuzzaman Hannan &amp; Zayaanify Team</string>
+    <string name="about_developer_whatsapp">WhatsApp</string>
+    <string name="about_developer_telegram">Telegram</string>
+    <string name="about_developer_email">Email</string>
 </resources>
