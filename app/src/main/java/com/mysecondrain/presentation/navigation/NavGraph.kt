@@ -54,11 +54,11 @@ fun AppNavGraph(
     onToggleDark: () -> Unit
 ) {
     NavHost(
-        navController    = navController,
-        startDestination = Screen.Dashboard.route,
-        modifier         = Modifier.padding(paddingValues),
-        enterTransition  = enterTransition,
-        exitTransition   = exitTransition,
+        navController      = navController,
+        startDestination   = Screen.Dashboard.route,
+        modifier           = Modifier.padding(paddingValues),
+        enterTransition    = enterTransition,
+        exitTransition     = exitTransition,
         popEnterTransition = popEnterTransition,
         popExitTransition  = popExitTransition
     ) {
@@ -86,7 +86,7 @@ fun AppNavGraph(
             arguments = listOf(
                 navArgument("taskId") {
                     defaultValue = -1L
-                    type = NavType.LongType
+                    type         = NavType.LongType
                 }
             )
         ) { backStack ->
@@ -131,7 +131,7 @@ fun AppNavGraph(
             arguments = listOf(
                 navArgument("noteId") {
                     defaultValue = -1L
-                    type = NavType.LongType
+                    type         = NavType.LongType
                 }
             )
         ) { backStack ->
@@ -170,7 +170,7 @@ fun AppNavGraph(
             arguments = listOf(
                 navArgument("meetingId") {
                     defaultValue = -1L
-                    type = NavType.LongType
+                    type         = NavType.LongType
                 }
             )
         ) { backStack ->
@@ -195,7 +195,7 @@ fun AppNavGraph(
             arguments = listOf(
                 navArgument("eventId") {
                     defaultValue = -1L
-                    type = NavType.LongType
+                    type         = NavType.LongType
                 }
             )
         ) { backStack ->
@@ -211,7 +211,8 @@ fun AppNavGraph(
         composable(Screen.Search.route) {
             SearchScreen(
                 onTaskClick = { id -> navController.navigate(Screen.AddEditTask.createRoute(id)) },
-                onNoteClick = { id -> navController.navigate(Screen.AddEditNote.createRoute(id)) }
+                onNoteClick = { id -> navController.navigate(Screen.AddEditNote.createRoute(id)) },
+                onDebtClick = { id -> navController.navigate(Screen.DebtDetail.createRoute(id)) }
             )
         }
 
@@ -251,7 +252,7 @@ fun AppNavGraph(
             )
         }
 
-        // ── Debts / Receivables ───────────────────────────────────────────────
+        // ── Debts ─────────────────────────────────────────────────────────────
         composable(Screen.Debts.route) {
             DebtsScreen(
                 onAddDebt   = { navController.navigate(Screen.AddEditDebt.createRoute()) },
@@ -264,7 +265,7 @@ fun AppNavGraph(
             arguments = listOf(
                 navArgument("debtId") {
                     defaultValue = -1L
-                    type = NavType.LongType
+                    type         = NavType.LongType
                 }
             )
         ) { backStack ->
